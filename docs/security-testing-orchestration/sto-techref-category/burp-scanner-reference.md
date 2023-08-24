@@ -137,7 +137,7 @@ Make sure that you give unique, descriptive names for the target and variant. Th
 
 #### Domain 
 
-Domain of the application instance to scan. Example: `https://myapp.io/portal/us`
+Domain of the Burp Scanner
 
 #### Access Token
 
