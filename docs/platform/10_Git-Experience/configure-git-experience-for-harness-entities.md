@@ -1,5 +1,5 @@
 ---
-title: Harness Git Experience Quickstart
+title: Harness Git Experience quickstart
 description: This topic explains steps to configure Git Experience for Harness Entities.
 sidebar_position: 3
 helpdocs_topic_id: grfeel98am
@@ -12,7 +12,7 @@ This quickstart shows you how to enable and use Git Experience for your Harness 
 
 Harness Git Experience lets you store your resources and configurations in Git and pick Git repos as the source of truth.
 
-### Objectives
+## Objectives
 
 You'll learn how to:
 
@@ -20,7 +20,7 @@ You'll learn how to:
 2. Create and sync a pipeline with your Git repo.
 3. Execute a pipeline
 
-### Before you begin
+## Before you begin
 
 Make sure you have the following set up Before you begin this quickstart:
 
@@ -29,10 +29,13 @@ Make sure you have the following set up Before you begin this quickstart:
 * A Personal Access Token (PAT) for your Git account.
 	+ Harness needs the PAT to use the Git platform APIs.
 	+ You add the PAT to Harness as a Text Secret and it is encrypted using a Harness Secret Manager.
-	+ Your Git Personal Access Token is stored in your Harness secret and is a private key to which only you have access. This secret cannot be accessed or referenced by any other user.
+	+ Your Git Personal Access Token is stored in your Harness secret and is a private key to which only you have access. This secret cannot be accessed or referenced by any other user. 
+	  
+	  Make sure you configure SSO for your GitHub token when enabling Git provider access via SSO.
+	  
 	+ The PAT must have the following scope:
 		- GitHub:![](./static/configure-git-experience-for-harness-entities-35.png)
-		- Bitbucket:![](./static/configure-git-experience-for-harness-entities-36.png)
+        - Bitbucket:![](./static/configure-git-experience-for-harness-entities-36.png)
 	+ To enable Git Experience for your resources, make sure that you have Create/Edit permissions for them.​​
 
 
@@ -41,7 +44,7 @@ Make sure your repo has at least one branch, such as main or master. For most Gi
 
 :::
 
-### Supported Git providers
+## Supported Git providers
 
 The following section lists the support for Git providers for Harness Git Sync:​
 
@@ -49,10 +52,11 @@ The following section lists the support for Git providers for Harness Git Sync:�
 * Bitbucket Cloud
 * Bitbucket Server
 * Azure Repos
+* GitLab
 
 Make sure `feature.file.editor` is not set to `false` in the `bitbucket.properties` file if you are using Bitbucket on-prem.
 
-### Git experience requirements
+## Git experience requirements
 
 You can store your resources and configurations in Git by selecting the **Remote** option while creating the resources.
 
@@ -71,7 +75,30 @@ You can store configurations of the following resources in Git:
 
 Harness tracks where your configuration is kept and manages the whole lifespan of resources by maintaining metadata for each resource.
 
-### Add a remote pipeline
+## Enforce Git experience
+
+To ensure that your resource configurations are saved only in Git repositories, you can enforce Git experience in your Harness account.
+You can do this by enabling `Enforce git experience for pipelines and templates`. 
+
+This setting applies to the following resources:
+
+* Pipelines
+* Templates
+
+Harness disables inline pipelines and templates, and users can only create remote pipelines and templates after enabling this setting. You can still create inline input sets corresponding to existing inline pipelines.
+
+To enforce Git experience in Harness: 
+
+1. Go to **ACCOUNT SETTINGS**, and then select **Account Resources**.
+2. Select **Default Settings**, and then select **Git Experience**.
+3. Enable **Enforce git experience for pipelines and templates**.
+   After you enable this setting, it applies to all the scopes (account, organization, and project) in Harness.
+4. To override this setting in the child scopes, select **Allow Overrides** beside the settings.
+   This forces configurations at the account scope to be saved in Git repositories only. Users can, however, still create inline pipelines and templates at the organizational and project levels.
+
+   ![](./static/enforce-gitx.png)
+
+## Add a remote pipeline
 
 This quickstart explains how to add a pipeline and sync it with your Git repo. This is called the Remote option. To add an inline pipeline, see **Remote** option. To add an inline pipeline, see [Create a Pipeline](../8_Pipelines/add-a-stage.md#step-1-create-a-pipeline).
 
@@ -140,7 +167,7 @@ The pipeline Studio is displayed with your repo and branch name.
 
 ![](./static/configure-git-experience-for-harness-entities-46.png)
 
-### Add a stage
+## Add a stage
 
 Click **Add Stage**. The stage options appear.
 
@@ -187,7 +214,27 @@ Click **Update**.
 
 The changes you made in Git are now applied to Harness.​
 
-### Execute pipeline
+## Edit Git details for a pipeline
+
+The Harness manager allows you to edit the Git details after the pipeline is configured and saved. You can modify following Git settings:
+
+- Git connector
+- Repository
+- YAML path
+
+To modify these Git settings, do the following:
+
+1. In your Project, select **Pipelines**.
+2. Go to the pipeline where you want to edit the Git details, and select more options (⋮).
+
+   ![](./static/harness-git-experience-quickstart-74.png)
+
+3. Make changes to the settings, and then select **Save**.
+
+   ![](./static/harness-git-experience-quickstart-75.png)
+
+
+## Execute pipeline
 
 In your Project, click **Pipelines**.
 
@@ -214,13 +261,25 @@ Click **Run**.
 
 Click **Run Pipeline**.
 
-### Branch selection logic for referencing remote entities in pipelines
+## Branch selection logic for fetching referenced entities in remote pipelines
 
-The configurations of the required resources and any referenced entities like Input Sets, are fetched from Git during pipeline fetch, creation, or execution.
+The configurations of the required resources and any referenced entities like input sets and templates are fetched from Git during pipeline fetch, creation, or execution.
 
-#### Referenced entities are in the same repository
+Following are the possible scenarios when your remote pipelines reference entities:
+- The referenced entities are stored in the same repository as the pipeline.
+- The referenced entities are stored in a different repository than the pipeline.
 
-If the referenced entities exist in the same repo, they are fetched from the same branch that you have selected for pipeline execution.​
+
+### The referenced entities are stored in the same repository as the pipeline
+
+Following are the key points to keep in mind when the referenced entities reside in the same repository: 
+
+- During pipeline execution, Harness fetches the entities like templates from the same branch as the pipeline. This lets you test the templates before merging them back into the "default" branch.
+- Harness recommends creating a separate project for testing templates.
+- Templates and the corresponding pipelines to test them must be in the same repository.
+- When you modify a template in a feature branch, the test pipeline is also present in the feature branch.
+- As you can execute the pipeline from any branch, you can select the branch in which the changes to test templates were pushed. Merge the changes after testing. Upon merging, others can access them.
+- This approach works best when the teams responsible for creating and managing templates are different from those responsible for executing the pipeline (Platform Engineering or DevOps teams versus Developers), so the test projects should be separate from the production projects.
 
 Let us look at an example: 
 
@@ -232,9 +291,15 @@ When you execute this pipeline, Harness fetches these entities from the branch t
 
 ![](./static/entities-in-same-git-repo.png)
 
-#### Referenced entities are in different repositories
+### The referenced entities are stored in a different repository than the pipeline
 
-If the referenced entities exist in a different repo, they are fetched from the default branch of the repo where the entities are stored.​
+Harness fetches entities like templates from the default branch of the repository if they are stored in another repository.
+
+This ensures: 
+- Teams always use tested and approved templates.
+- Prevents teams to execute pipelines using templates from different branches that have not yet been tested.
+
+If your inline entities refer remote entities, Harness fetches the remote entities from the default branch.
   
 Let us look at an example: 
   
@@ -246,7 +311,42 @@ When you execute this pipeline, Harness fetches these nested entities from the d
   
 Harness resolves all the dependencies and then proceeds with Pipeline execution.​
 
-### Next steps
+### Manual branch selection
+
+It is also possible to select the branch for the referenced entities if you have explicitly selected a feature branch.
+
+For example, you can select a branch in your pipeline to reference templates from another branch.
+
+Here is a demo explaining steps to select a branch for a referenced template: 
+
+<docvideo src="https://www.loom.com/share/a1848256318c4b92aefa965402c9dca9?sid=0ed15761-4be2-4897-b9fd-73782df1a21f"/>
+
+
+To specify the remote branch for the referenced template:
+
+1. Select your remote pipeline, and then select **Add Stage**.
+
+2. Select **Use Template**.
+
+3. Select the branch, and then select **Use Template**.
+
+   ![](./static/select-branch.png)
+
+   The template has now been referenced from a different branch in the remote pipeline.
+
+   Harness displays the pipeline branch and the referenced template branch.
+
+   ![](./static/branch-details.png)
+
+4. Select **Save**.
+
+The parent YAML will include an example of a YAML screenshot if you explicitly select any branch for the child template.
+
+The parent YAML will not contain a branch for the child if you do not specify a branch explicitly. 
+
+To switch the referring child entity from a feature branch to a default branch, manually remove the field `gitBranch` from the parent YAML.
+
+## Next steps
 
 * [Manage Input Sets and Triggers in Simplified Git Experience​](manage-input-sets-in-simplified-git-experience.md)
 

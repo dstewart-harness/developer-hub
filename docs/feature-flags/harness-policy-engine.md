@@ -5,7 +5,7 @@ tags:
    - harness policy engine
    - OPA
    - feature flag
-sidebar_position: 80
+sidebar_position: 150
 helpdocs_topic_id: 4vx27jqwv2
 helpdocs_category_id: yo726tfqly
 helpdocs_is_private: false
@@ -13,7 +13,7 @@ helpdocs_is_published: true
 ---
 
 :::info note
- Currently, this feature is behind the Feature Flags `OPA_PIPELINE_GOVERNANCE`, `CUSTOM_POLICY_STEP`, and `OPA_FF_GOVERNANCE`. Contact [Harness Support](mailto:support@harness.io) to enable the feature. 
+For some accounts, this feature may be behind the Feature Flags `OPA_PIPELINE_GOVERNANCE`, `CUSTOM_POLICY_STEP`, and `OPA_FF_GOVERNANCE`. Contact [Harness Support](mailto:support@harness.io) to enable the feature. 
 :::
 
 Harness Policy Engine uses [Open Policy Agency (OPA)](https://www.openpolicyagent.org/docs/latest/) to store policies that you can then enforce on your Feature Flags. You can use Harness Policy Engine with the following [Harness entities](../platform/20_References/harness-entity-reference.md) on the Harness Platform:
@@ -55,7 +55,7 @@ The Harness Policy Engine uses [OPA](https://www.openpolicyagent.org/) as the ce
 
 In the Harness Platform, you add policies written in Rego to a Policy Set and select the Harness entities (for example, Feature Flags) for evaluation.
 
-![Screenshot of the Policy Editor on the Harness Platform. ](./static/8-harness-policy-engine-10.png)*Figure 1: Adding a Policy*
+![Screenshot of the Policy Editor on the Harness Platform. ](./static/8-harness-policy-engine-10.png)
 
 Then, when a Feature Flag is saved, Harness reaches out to the Harness OPA server to evaluate the action using the Policy Set. The Feature Flag is saved successfully, saved with a warning, or not saved and an error is received.
 
@@ -81,11 +81,11 @@ When you create the policy you can choose whether a Feature Flag receives only a
 * **Success**: You create a Feature Flag and name it `ABC-567`, which matches the naming regex you set. When you save the flag, the policy rule is evaluated, returns `Flag created`, and the flag is saved.
 * **Warning**: You create a Feature Flag and name it `Flag2`, which doesn’t match the naming regex you set. The flag is saved but you receive the following warning message:
 
-   ![Screenshot of the warning message "Flag saved with policy warnings". ](./static/8-harness-policy-engine-11.png)*Figure 2: A Flag with policy warnings*
+   ![Screenshot of the warning message "Flag saved with policy warnings". ](./static/8-harness-policy-engine-11.png)
 
 * **Failure**: You create a Feature Flag and name it `Flag2`, which doesn’t match the naming regex you set. The flag doesn’t save and you receive the following error message:
 
-![Screenshot of the error message "flag cannot be saved due to the policy evaluation failures".](./static/8-harness-policy-engine-12.png)*Figure 3: A Flag with policy failures*
+![Screenshot of the error message "flag cannot be saved due to the policy evaluation failures".](./static/8-harness-policy-engine-12.png)
 
 ## Next step
 

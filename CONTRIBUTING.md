@@ -7,6 +7,7 @@
 ![SRM](static/img/icon_srm.svg)
 ![STO](static/img/icon_sto.svg)
 ![CE](static/img/icon_ce.svg)
+![IDP](static/img/icon_idp.svg)
 
 Thanks for considering to contribute to the Harness Developer Hub! Contributions come in all shapes and sizes and we appreciate them all. Contributions to the Harness Developer Hub come in the form of creating pull requests or submitting issues. 
 
@@ -64,7 +65,7 @@ Harness follows the Microsoft Style Guide:
 
 Since the final document is in Markdown, feel free to author in a tool of your choice and port to Markdown. 
 
-Vale is an excellent tool for validating spelling and style in Markdown **locally**. You can run [Vale](https://vale.sh/) aganist a specific file or project structure prior to submitting if you would like. 
+Vale is an excellent tool for validating spelling and style in Markdown **locally**. You can run [Vale](https://vale.sh/) aganist a specific file or project structure prior to submitting if you would like, locally. 
 
 ```
 #install

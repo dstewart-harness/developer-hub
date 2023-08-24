@@ -1,11 +1,11 @@
 {
-  "position": 2,
-  "label": "Configure Chaos Experiments",
+  "position": 20,
+  "label": "Configure chaos experiments",
   "collapsible": "true",
   "collapsed": "true",
   "link":{
       "type":"generated-index",
-      "title":"Configure Chaos Experiments"
+      "title":"Configure chaos experiments"
    },
   "customProps": {
     "description": "Configuring chaos experiments"

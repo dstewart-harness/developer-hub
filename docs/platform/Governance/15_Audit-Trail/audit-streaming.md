@@ -1,12 +1,11 @@
 ---
-title: Configure Audit Streaming
+title: Configure audit streaming
 description: Stream your audit logs to an external destination.
 sidebar_position: 3
 ---
 
-
-:::note
-Currently, this feature is in Beta and behind the feature flag `PL_AUDIT_LOG_STREAMING_ENABLED`. Contact Harness Support to enable the feature.
+:::important
+Currently, this feature is in Beta and behind the feature flag `PL_AUDIT_LOG_STREAMING_ENABLED`. Contact [Harness Support](mailto:support@harness.io) to enable the feature.
 :::
 
 You can configure a streaming destination in Harness to send audit log data to another location for processing. Integrating audit data with other Security Incident and Event Management (SIEM) tools lets you do the following:
@@ -47,7 +46,7 @@ To add a streaming destination in Harness:
 
 7. Select **Continue**.
    
-![](./static/audit-streaming.png)
+   ![](./static/audit-streaming.png)
 
 ## Configure the streaming connector
 
@@ -69,11 +68,11 @@ To add a streaming destination in Harness:
 
 6. After the connection test is successful, select **Finish**.
    
-   :::note
+   :::important
    Harness does not consider AWS buckets while testing the connection. Also, it tests the connector used without testing the bucket.
    :::
    
-   The streaming destination gets configured and appears in the list of destinations under **Audit Log Streaming**. By default setting of this destination is inactive.
+   The streaming destination gets configured and appears in the list of destinations under **Audit Log Streaming**. By default the destination is inactive.
    
 ## Activate or deactivate streaming
 
@@ -93,9 +92,29 @@ You can change the audit stream configuration by clicking three dots beside the 
 
 - **Edit**: Select a different streaming destination or make changes to the existing destination.
 
-- Delete: Delete the audit stream destination.
+- **Delete**: Delete the audit stream destination.
 
 ![](./static/edit-delete.png)
+
+
+## Amazon S3 audit file details
+
+Here is an example of an audit stream file in one of the Amazon S3 buckets.
+
+![](./static/s3-auditstream-file.png)
+
+This file has a list of audit events in JSON format.
+
+Following are the key points about the naming convention of the audit stream file: 
+- There are three timestamps in the file name: `<t1>_<t2>_<t3>`.
+- `<t1>` and `<t2>` indicate the time range of audit events in the file. This time range is provided for information only and is not always accurate. The timestamp can also be out of range if there is a delay in capturing the event.
+- `<t3>` indicates the time when the file was written.
+
+
+:::important
+Harness recommends not building any business logic based on the file name.
+:::
+
 
 ## Payload schema
 
@@ -104,21 +123,19 @@ Streamed audit events have a predictable schema in the body of the response.
 |**Field**       |  **Description**     |   **Is required**    |
 |  ---  |  ---  |  ---  |
 |   auditEventId    |  Unique ID for the audit event.     |   Required    |
-|   auditEventAuthor    |  [Principal](../../4_Role-Based-Access-Control/1-rbac-in-harness.md#harness-rbac-components) attached with audit event.    |   Required    |
+|   auditEventAuthor    |  [Principal](/docs/platform/role-based-access-control/rbac-in-harness#rbac-components) attached with audit event.    |   Required    |
 |    auditModule   | Module for which the audit event is generated.      |   Required    |
 |   auditResource    |  Resource audited.     |  Required     |
-|   auditResourceScope    |  [Scope](../../4_Role-Based-Access-Control/1-rbac-in-harness.md#rbac-scope) of the audited resource.     |   Required    |
+|   auditResourceScope    |  [Scope](/docs/platform/role-based-access-control/rbac-in-harness#permissions-hierarchy-scopes) of the audited resource.     |   Required    |
 |  auditAction     |  Action on the audited resource.     |  Required     |
 |    auditEventTime   |  Date and time of the event.     | Required      |
 |   auditHttpRequestInfo    |  Details of the HTTP request.     |  Optional     |
 |   auditEventMetadata    |     Additional details required for streaming the audit log.  |  Optional     |
 
 
-
 ### JSON payload
 
-
-```
+```json
 {
   "$schema": "http://json-schema.org/draft-04/schema#",
   "type": "object",

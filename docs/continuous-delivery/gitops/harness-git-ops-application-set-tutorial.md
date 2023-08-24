@@ -1,7 +1,7 @@
 ---
 title: Harness GitOps ApplicationSet and PR pipeline tutorial
 description: This topic describes how to create a GitOps ApplicationSet and PR Pipeline in Harness GitOps.
-sidebar_position: 7
+sidebar_position: 8
 helpdocs_topic_id: lf6a27usso
 helpdocs_category_id: 013h04sxex
 helpdocs_is_private: false
@@ -229,29 +229,7 @@ Now that we have the Agent, Clusters, and Repo, we can create the GitOps Applica
 	1. **Cluster:** select the Agent cluster **appset-example**.
 	2. Namespace: enter **default**.
 
-The GitOps Application is added. Now you can sync it.
-
-## Sync the ApplicationSet to create the applications
-
-A Sync brings the live state to its desired state by applying the declarative description. The guestbook application in the ApplicationSet will be created in the two target clusters. After the sync, the resources will look like this in Harness:
-
-![](./static/harness-git-ops-application-set-tutorial-40.png)
-
-When you click **Sync**, Harness will use the ApplicationSet to create the new Harness Applications for the dev and prod clusters.
-
-1. In the GitOps Application, click **SYNC**.
-   
-   ![](./static/harness-git-ops-application-set-tutorial-41.png)
-
-2. In the Sync settings, click **Synchronize**. Synchronization will take a minute.
-
-In the git-generator-files-discovery Application **Resource View**, you can see the ApplicationSet and new Applications:
-
-![](./static/harness-git-ops-application-set-tutorial-42.png)
-
-Congratulations! Now you have a working ApplicationSet in Harness deploying an application to two target clusters.
-
-Next, we'll create a PR Pipeline to change the application in just one of the target clusters.
+The GitOps Application is added. Now you can [sync](/docs/continuous-delivery/gitops/sync-gitops-applications) it.
 
 ## Create a PR Pipeline
 
@@ -352,13 +330,22 @@ The Harness Service represents what you're deploying. In this case, we're deploy
 1. In **Select Service**, click **New Service**.
 2. In **Name**, enter **PR Example**.
 3. In **Manifests**, click **Add Release Repo Manifest**.
-4. In **Release Repo Store**, select **Github**.  
+4. In **Release Repo Store**, select one of the following repositories.  
 
-Now we'll add a Github Connector to tell Harness where to pull the config.json from.
+```mdx-code-block
+import Tabs from '@theme/Tabs';   
+import TabItem from '@theme/TabItem';
+```
+```mdx-code-block
+<Tabs>
+<TabItem value="GitHub" label="GitHub" default>
+```
 
-#### Add Github Connector
+Add a Github connector to configure the location from which Harness can pull the config.json file. 
 
-1. In **Github Connector**, click **New Github Connector**.
+To add a Github connector:
+
+1. In **Github Connector**, select **New Github Connector**.
 2. Enter the following Github Connector settings:
     1. **Name:** enter **gitops-github**.
     2. **URL Type:** select **Repository**.
@@ -367,14 +354,46 @@ Now we'll add a Github Connector to tell Harness where to pull the config.json f
     5. **Authentication:** select **Username and Token**. For the Token, you'll need to use a Personal Access Token (PAT) from Github. If you are logged into Github, just go to <https://github.com/settings/tokens>.
     6. Ensure the PAT has the **repo** scope selected.
    
-   ![](./static/harness-git-ops-application-set-tutorial-52.png)
+       ![](./static/harness-git-ops-application-set-tutorial-52.png)
    
-   You will store the PAT in a [Harness Text Secret](/docs/platform/Secrets/add-use-text-secrets). For details on Secrets Management, go to [Harness Secrets Management Overview](/docs/platform/Secrets/Secrets-Management/harness-secret-manager-overview).
+       You will store the PAT in a [Harness Text Secret](/docs/platform/Secrets/add-use-text-secrets). For details on Secrets Management, go to [Harness Secrets Management Overview](/docs/platform/Secrets/Secrets-Management/harness-secret-manager-overview).
     
     7. Select **Enable API access** and use the same Harness Secret.
-3. Click **Continue**.
+    
+    For more information, go to the [GitHub connector settings reference](/docs/platform/Connectors/Code-Repositories/ref-source-repo-provider/git-hub-connector-settings-reference).
+3. Select **Continue**.
 4. In **Connect to the provider**, select **Connect through Harness Platform**., and then click **Save and Continue**.
 5. When the **Connection Test** in complete, click **Continue**.
+
+```mdx-code-block
+</TabItem>
+<TabItem value="Bitbucket" label="Bitbucket">
+```
+Add a Bitbucket connector to configure the location from which Harness can pull the config.json file. 
+
+To add a Bitbucket connector:
+
+1. In **Bitbucket Connector**, select **New Bitbucket Connector**.
+2. Enter the following Bitbucket Connector settings:
+    1. **Name:** enter **gitops-bitbucket-cloud**.
+    2. **URL Type:** select **Repository**.
+    3. **Connection Type:** select **HTTP**.
+    4. **GitHub Repository URL:** enter the HTTP URL for repo you used for your ApplicationSet, such as `https://bitbucket.org/johnsmith/applicationset.git`.
+    5. **Authentication:** select **Username and Token**. For the Token, use a Personal Access Token (PAT) from Bitbucket. If you are logged into Bitbucket, go to [HTTP access tokens](https://confluence.atlassian.com/bitbucketserver/http-access-tokens-939515499.html). You must provide an account-level app password or token. Repo-level tokens are not supported.
+   
+       Store the PAT in a [Harness Text Secret](/docs/platform/Secrets/add-use-text-secrets). For details on Secrets Management, go to [Harness Secrets Management Overview](/docs/platform/Secrets/Secrets-Management/harness-secret-manager-overview).
+    
+    6. Select **Enable API access** and use the same Harness Secret.
+    
+    For more information, go to [Bitbucket connector settings reference](/docs/platform/Connectors/Code-Repositories/ref-source-repo-provider/bitbucket-connector-settings-reference).
+3. Select **Continue**.
+4. In **Connect to the provider**, select **Connect through Harness Platform**, and then click **Save and Continue**.
+5. After the Connection Test is complete, click **Continue**.
+
+```mdx-code-block
+</TabItem>    
+</Tabs>
+```
 
 #### Specify manifest details
 
@@ -418,11 +437,26 @@ In **Execution**, Harness automatically adds the following steps:
   This step supports hierarchical variables. If you specify a dot-separated variable in this step, it creates or updates a nested variable.  
 
   You can also enter variables in this step to update key:value pairs in the config file you are deploying.  
-  If there is a matching variable name in the variables of the Service or Environment used in this Pipeline, the variable entered in this step will override them.  
+  If there is a matching variable name in the variables of the Service or Environment used in this Pipeline, the variable entered in this step will override them. 
+  
+  If an empty or blank value is provided for a variable, it will be disregarded, and no updates will be made to the JSON or YAML file for that specific variable.
   
   ![](./static/harness-git-ops-application-set-tutorial-56.png)
 
 * **Merge PR**: Merges the new PR.
+* **Revert PR**: Reverts the commit passed and creates a new PR. Use this step if you want to run any tests or automation on the pipeline and then revert the commit done by the Update Release Repo step.
+  
+  The Revert PR step uses the commitId of the Update Release Repo step as input. The commitId can be an expression, runtime input, or a static value. For example, `<+pipeline.stages.deploy.spec.execution.steps.updateReleaseRepo.updateReleaseRepoOutcome.commitId>`. 
+  
+  The Revert PR step creates a new branch and creates a commit to revert the changes done in the Update Release Repo step commit. 
+  
+  You can create another Merge PR step to merge the Revert PR step. 
+
+  :::info Limitation
+
+  You can create a maximum of two Merge PR steps in a stage.
+
+  :::  
 
 You don't have to edit anything in these steps.
 
@@ -445,7 +479,7 @@ Now your PR Pipeline is ready.
 
   Here's an example of each step:
 
-* Service:
+  * Service:
   ```bash
   Starting service step...  
   Processing service variables...  
@@ -455,7 +489,7 @@ Now your PR Pipeline is ready.
   Completed service step
   ```
 
-* GitOps Clusters:
+  * GitOps Clusters:
   ```bash
   Environment(s): {dev}   
     
@@ -469,18 +503,35 @@ Now your PR Pipeline is ready.
   Completed
   ```
 
-* Update Release Repo:
+  * Update Release Repo:
   
   ![](./static/harness-git-ops-application-set-tutorial-59.png)
 
-* Merge PR:
+  * Merge PR:
   ```bash
-  PR Link: https://github.com/michaelcretzman/applicationset/pull/5  
+  PR Link: https://github.com/wings-software/gitops-pipeline-demo/pull/155  
   Pull Request successfully merged  
-  Commit Sha is 36f99ff737b98986045365e1b2be1326e97d4836  
+  Commit Sha is bcd4f2f73a47b74dba54habbcd10a6679ed99a  
   Done.
   ```
 
+  * Revert PR:  
+  ```bash
+  Setting git configs
+  Using optimized file fetch
+  Created revert PR https://github.com/wings-software/gitops-pipeline-demo/pull/156
+  Done.
+  ```
+
+  * Merge PR_1:   
+  ```bash
+  PR Link: https://github.com/wings-software/gitops-pipeline-demo/pull/156
+  Pull Request successfully merged
+  Commit Sha is da3c393560bf5e831a7b4fa123456c1eafb989ac
+  Done.
+  ```
+  
+  
 6. Check the repo to see that the config.json file for the dev environment has been updated with the new **asset\_id** value:
 
   ![](./static/harness-git-ops-application-set-tutorial-60.png)
@@ -590,6 +641,7 @@ PR Pipelines support the wave deployments practice by allowing you to change a m
 
 ### ApplicationSet Support
 
+* Do not deploy an ApplicationSet in a namespace other than the namespace where the GitOps Agent is installed. The ApplicationResource has to be deployed in same namespace as the GitOps Agent.
 * Harness supports both JSON and YAML formats for ApplicationSets.
 * Harness supports all ApplicationSet generators. You can add an ApplicationSet for any generator as an Application in Harness:
 	+ [List Generator](https://argocd-applicationset.readthedocs.io/en/stable/Generators-List/)

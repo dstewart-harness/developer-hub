@@ -17,7 +17,7 @@ This topic uses a [sample repository](https://github.com/thisrohangupta/harness)
 - Defining your resources like service, environment, infrastructure definition, etc. via Terraform is a one-way sync. By using Terraform, you define the object in Git. After you commit the change, a Harness pipeline provisions the resource to your account. 
 - Any changes you make via Git are propagated to the UI via this pipeline, which fetches the Terraform file definition for the resource.
 - To avoid configuration mismatches, any changes you make in the UI must be reconciled and updated in the YAML.
-- To prevent the editing and creation of resources in the Harness UI, use [RBAC](../../4_Role-Based-Access-Control/1-rbac-in-harness.md).
+- To prevent the editing and creation of resources in the Harness UI, use [RBAC](/docs/platform/role-based-access-control/rbac-in-harness).
 
 ## Product Demo
 
@@ -295,7 +295,7 @@ This section explains the steps to set up a sample pipeline.
 
 ### Build the pipeline
 
-For detailed steps to build the pipeline, go to [Kubernetes deployment tutorial](https://developer.harness.io/docs/continuous-delivery/onboard-cd/cd-quickstarts/kubernetes-cd-quickstart/).
+For detailed steps to build the pipeline, go to [Kubernetes deployment tutorial](/docs/continuous-delivery/deploy-srv-diff-platforms/kubernetes/kubernetes-cd-quickstart).
 
 ### Configure pipeline stages
 
@@ -328,7 +328,7 @@ Harness supports the following:
 - GitLab
 - Bitbucket
 
-For more information on triggers, go to [Trigger pipelines using custom payload conditions](https://developer.harness.io/docs/platform/triggers/trigger-pipelines-using-custom-payload-conditions/).
+For more information on triggers, go to [Trigger pipelines using Git Events](/docs/platform/triggers/triggering-pipelines/).
 
 ```YAML
 trigger:

@@ -134,8 +134,11 @@ The issue type for the selected Jira Issue is now updated with the issue type yo
 
 In **Advanced**, you can use the following options:
 
-* [Step skip condition settings](/docs/platform/Pipelines/w_pipeline-steps-reference/step-skip-condition-settings)
-* [Step failure strategy settings](/docs/platform/Pipelines/w_pipeline-steps-reference/step-failure-strategy-settings)
+* [Delegate Selector](https://developer.harness.io/docs/platform/delegates/manage-delegates/select-delegates-with-selectors/)
+* [Conditional Execution](https://developer.harness.io/docs/platform/pipelines/w_pipeline-steps-reference/step-skip-condition-settings/)
+* [Failure Strategy](https://developer.harness.io/docs/platform/pipelines/w_pipeline-steps-reference/step-failure-strategy-settings/)
+* [Looping Strategy](https://developer.harness.io/docs/platform/pipelines/looping-strategies-matrix-repeat-and-parallelism/)
+* [Policy Enforcement](https://developer.harness.io/docs/platform/Governance/Policy-as-code/harness-governance-overview)
 
 ## Apply and test
 
@@ -156,3 +159,23 @@ In a new browser tab, paste the URL and press enter.
 The updated issue appears in Jira.
 
 
+## Parent issue support
+
+Harness supports parent links (the `issuelink` field in Jira). 
+
+This support enables you to do the following:
+
+* The Jira Create step can now be used to create issues with existing issues as their parent.
+* The Jira Update step can be used to update the parent of a specific issue.
+* A sub-task can be created using the Jira Create step.
+* A ticket parent can be provided by simply typing the parent issue key in **Parent Link** setting, such as `TJI-47890`. 
+
+To use parent links, do the following:
+
+1. In the Jira Create or Update step, select **Optional Configuration**.
+2. Select **Fields**. 
+3. In **Add Jira Fields**, select **Parent Link**, and select **Add**.
+   
+   ![picture 0](static/8144e6b546672f2faa646b364fccf73a07d8617ca8e23797eb49b6f132f7c8cc.png)  
+
+4. In **Parent Link**, add the parent issue key.

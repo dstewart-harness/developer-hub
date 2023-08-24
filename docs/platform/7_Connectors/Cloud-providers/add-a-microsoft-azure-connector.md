@@ -1,6 +1,6 @@
 ---
 title: Add a Microsoft Azure connector
-description: The Azure connector connects Harness to Azure.
+description: Connect Harness to your Azure accounts and services.
 sidebar_position: 3
 helpdocs_topic_id: 9epdx5m9ae
 helpdocs_category_id: o1zhrfo8n5
@@ -19,6 +19,97 @@ Use the Azure Repos connector to [connect to Azure SCM repos](../Code-Repositori
 If you're using Harness **Cloud Cost Management (CCM)**, you can [Set Up Cloud Cost Management for Azure](../../../cloud-cost-management/2-getting-started-ccm/4-set-up-cloud-cost-management/set-up-cost-visibility-for-azure.md).
 
 :::
+
+## Auth Provider API and TokenRequest API options
+
+Harness provides the option of using the Auth Provider API or TokenRequest API for authentication.
+
+<details>
+<summary>Summary of Auth Provider and TokenRequest API changes</summary>
+
+In Kubernetes 1.22, the Auth Provider API was deprecated and replaced with a new TokenRequest API. The TokenRequest API is used by client libraries and tools to request an authentication token from the Kubernetes API server.
+
+The TokenRequest API provides a more flexible and extensible authentication mechanism than the Auth Provider API. Instead of relying on pre-configured authentication plugins, client libraries and tools can now dynamically request authentication tokens from the Kubernetes API server based on their specific needs and requirements.
+
+To use the TokenRequest API for authentication, client libraries and tools can send a TokenRequest object to the Kubernetes API server. The TokenRequest object specifies the audience, scopes, and other parameters for the requested token. The Kubernetes API server then validates the request, generates a token with the requested parameters, and returns the token to the client.
+
+One advantage of the TokenRequest API is that it allows for more fine-grained control over authentication and authorization. For example, a client library or tool can request a token with only the necessary scopes to perform a specific operation, rather than requesting a token with full cluster access.
+
+Another advantage of the TokenRequest API is that it allows for easier integration with external identity providers and authentication systems. Client libraries and tools can use the TokenRequest API to request authentication tokens from external providers, such as OAuth2 providers or custom authentication systems, and use those tokens to authenticate to the Kubernetes API server.
+
+Overall, the TokenRequest API provides a more flexible and extensible authentication mechanism than the deprecated Auth Provider API, and allows for more fine-grained control over authentication and authorization in Kubernetes.
+
+</details>
+
+
+To select which API to use:
+
+- **Auth Provider API**: this is the current default. You do not have to change the default settings of Harness connectors or the Harness delegates you use.
+- **TokenRequest API**: you must install the provider-specific plugin on the Harness delegate(s) to use the TokenRequest API introduced in Kubernetes 1.22.
+
+### Install the kubelogin client-go credential (exec) plugin on the delegate
+
+When using the Harness Azure connector with Kubernetes version >= 1.22, you can use the **kubelogin client-go credential (exec) plugin** to authenticate to AKS cluster.
+
+The Harness Azure connector has 4 authentication types. For each type, you must install the following dependencies in the Harness delegates you use or Harness will follow the old Auth Provider API format.
+
+- **Secret** (`SERVICE_PRINCIPAL_SECRET`): Kubelogin binary.
+- **Certificate** (`SERVICE_PRINCIPAL_CERT`): Kubelogin binary and azurecli (azurecli is required as kubelogin does not support certificate in PEM format).
+- **System Assigned Managed Identity** (`MANAGED_IDENTITY_SYSTEM_ASSIGNED`): Kubelogin binary.
+- **User Assigned Managed Identity** (`MANAGED_IDENTITY_USER_ASSIGNED`): Kubelogin binary.
+
+The **Secret** and **Certificate** options are available when you select the **Specify credentials here** option in the Azure connector.
+
+The **System Assigned Managed Identity** and **User Assigned Managed Identity** options are available when you select the **Use the credentials of a specific Harness Delegate** option in the Azure connector.
+
+You can install the kubelogin plugin on the delegate by creating a delegate with an immutable image and updating the following commands in `INIT_SCRIPT`:
+
+<details>
+<summary>RHEL 7 OS</summary>
+
+```
+// Install dependencies
+microdnf install --nodocs openssl util-linux unzip python2 && microdnf clean all
+
+// Download kubelogin
+curl https://github.com/Azure/kubelogin/releases/download/v0.0.27/kubelogin-linux-amd64.zip -L -o kubelogin.zip
+unzip kubelogin.zip
+chmod 755 /opt/harness-delegate/bin/linux_amd64/kubelogin
+
+// Add the binary to PATH
+mv ./bin/linux_amd64/kubelogin /usr/local/bin
+
+// If the AKS cloud provider auth type is Certificate then we need to install azure-cli as its PEM format is not supported by kubelogin. It can be installed on the delegate by creating a delegate with an immutable image and updating the following commands in INIT_SCRIPT
+rpm --import https://packages.microsoft.com/keys/microsoft.asc
+echo -e "[azure-cli]
+name=Azure CLI
+baseurl=https://packages.microsoft.com/yumrepos/azure-cli
+enabled=1
+gpgcheck=1
+gpgkey=https://packages.microsoft.com/keys/microsoft.asc" | tee /etc/yum.repos.d/azure-cli.repo
+microdnf install azure-cli
+```
+</details>
+
+<details>
+<summary>Ubuntu</summary>
+
+```
+// Download kubelogin
+curl https://github.com/Azure/kubelogin/releases/download/v0.0.27/kubelogin-linux-amd64.zip -L -o kubelogin.zip
+unzip kubelogin.zip
+chmod 755 /opt/harness-delegate/bin/linux_amd64/kubelogin
+
+// Add the binary to PATH
+mv ./bin/linux_amd64/kubelogin /usr/local/bin
+
+// If the AKS cloud provider auth type is Certificate then we need to install az-cli as its PEM format is not supported by kubelogin. It can be installed on the delegate by creating a delegate with an immutable image and updating the following commands in INIT_SCRIPT
+curl -sL https://aka.ms/InstallAzureCLIDeb | bash
+```
+</details>
+
+
+For more information, go to [kubelogin](https://github.com/Azure/kubelogin/releases) from Azure and [Delegate installation overview](/docs/platform/2_Delegates/install-delegates/overview.md).
 
 ## Roles, permission, and cluster requirements
 
@@ -442,6 +533,48 @@ Here's an example of Azure RBAC permissions used for System Assigned Managed Ide
   </TabItem3>
 </Tabs3>
 ```
+
+### Azure Resource Management (ARM)
+
+The roles required depend on the scope type of your ARM template:
+
+- **Resource group**: requires the `Contributor` role.
+- **Subscription**: requires the `Contributor` role.
+- **Management group**: requires the `Contributor` role.
+- **Tenant**: requires the `Contributor` or `Owner` role. For example, creating a Tenant requires the `Contributor` role, but the `Owner` role is required to create role assignments.
+- **Key Vault access**: to enable access to Key Vaults from the ARM templates you use in Harness, make sure you select the **Azure Resource Manager for template deployment** option in the Key Vault Access Policy.
+
+![picture 0](static/d2be476b98ef01447bf4fc604640ed8432ebd245a35da2ae45b556e86aae4f8a.png)  
+
+:::note
+
+The Azure roles provided in the connector must allow Harness to provision the Azure resources in your ARM templates. For example, to create a policy assignment, the `Resource Policy Contributor` role is required.
+
+:::
+
+## Azure Blueprints
+
+In Azure, the permissions required to create and delete Blueprints are listed in [Permissions in Azure Blueprints](https://docs.microsoft.com/en-us/azure/governance/blueprints/overview#permissions-in-azure-blueprints) from Azure.
+
+The Azure roles required on the service principal used by Harness depend on the scope type of your Blueprint definition.
+
+### Management Scope
+
+* **System-assigned managed identity:**
+	+ **Contributor** role at the management group scope where the Blueprint definitions will be created and published.
+	+ **Owner** role at subscription scope where the assignment will be done.
+* **System-assigned user identity:**
+	+ **Contribute** role at the management group scope where Blueprint definitions will be created and published.
+  
+	Harness does not manage the right and lifecycle of a user-managed identity. You will need to manage the user-managed identity.
+
+### Subscription Scope
+
+* **System-assigned managed identity:**
+	+ **Owner** role at the subscription scope.
+* **System-assigned user identity:**
+	+ **Contribute** role to create and publish the Blueprint definition.  
+	Harness does not manage the right and lifecycle of a user-managed identity. You are responsible for managing the right and lifecycle of a user-managed identity that is in charge of assignment.
 
 ## Add an Azure connector
 

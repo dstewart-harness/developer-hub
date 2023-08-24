@@ -1,9 +1,9 @@
 {
-    "label": "Variables and Expressions",
+    "label": "Variables and expressions",
     "collapsible": "true",
     "collapsed": "true",
     "className": "red",
-    "position": 10,
+    "position": "13",
 
     "link": {
         "type": "generated-index",

@@ -1,13 +1,14 @@
 ---
-title: CCM RBAC
+title: RBAC
 description: Harness RBAC includes Roles and Permissions that enable you to control access to the CCM resources in your Harness account. CCM Roles and Permissions are Account Level Only. Most Roles and Permission…
-# sidebar_position: 2
+# sidebar_position: 10
 helpdocs_topic_id: di9dut7jki
 helpdocs_category_id: b943tytof4
 helpdocs_is_private: false
 helpdocs_is_published: true
 ---
 
+# CCM Roles and Permissions
 Harness RBAC includes Roles and Permissions that enable you to control access to the CCM resources in your Harness account.
 
 ## CCM Roles and Permissions are Account Level Only

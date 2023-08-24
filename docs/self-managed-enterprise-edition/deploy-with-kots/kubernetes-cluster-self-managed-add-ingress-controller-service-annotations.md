@@ -1,7 +1,7 @@
 ---
 title: Add ingress controller annotations
-description: Learn how to annotate the Ingress controller to customize its behavior.
-# sidebar_position: 30
+description: Learn how to annotate the Ingress controller to customize its behavior for on-prem installations.
+sidebar_position: 3
 helpdocs_topic_id: zbqas64zn8
 helpdocs_category_id: vu99714ib1
 helpdocs_is_private: false
@@ -10,7 +10,7 @@ helpdocs_is_published: true
 
 :::info note
 
-This is an End of Life (EOL) notice for the KOTS installation method. This method will be in maintenance mode after May 31, 2023. 
+This is an End of Life (EOL) notice for the KOTS installation method. This method is in maintenance mode as of May 31, 2023. 
 
 Maintenance mode means the following:
 

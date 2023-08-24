@@ -1,7 +1,7 @@
 ---
-title: Enable or Disable a Policy Set
+title: Enable or disable a policy set
 description: Disable a Policy Set by locating the Policy Set and toggling the Enforced setting to off.
-# sidebar_position: 2
+sidebar_position: 3
 helpdocs_topic_id: 6lxxd5j8j5
 helpdocs_category_id: zoc8fpiifm
 helpdocs_is_private: false
@@ -30,6 +30,7 @@ Click **Policy Sets**.
 Toggle the **Enforced** setting to off.
 
 ![](./static/disable-a-policy-set-55.png)
+
 ### Notes
 
 * To prevent issues with team members Pipelines and resources when creating a new Policy Set, a new Policy Set is disabled by default.

@@ -14,12 +14,7 @@ You need to set up an Agent before you can set up a Cluster, Repository, or Appl
 
 Typically, you install the Agent in the target cluster, but you can install it any cluster and it can connect to remote clusters using the credentials you provide.
 
-## Before You Begin
-
-* [Harness GitOps Basics](harness-git-ops-basics.md)
-* [Harness CD GitOps Quickstart](harness-cd-git-ops-quickstart.md)
-
-## Review: Requirements
+## Requirements
 
 The Harness GitOps Agent has the following requirements:
 
@@ -31,7 +26,7 @@ The Harness GitOps Agent has the following requirements:
 	For more information, see [User-Facing Roles](https://kubernetes.io/docs/reference/access-authn-authz/rbac/#user-facing-roles) from Kubernetes.
 * **Namespace:** The target namespace in the cluster must be created already. Harness will not create the namespace.
 
-## Review: Using Existing Argo CD Projects
+## Using existing Argo CD projects
 
 Typically, when you set up a Harness GitOps Agent you install a new Harness GitOps Agent in your target cluster along with other services (Repo server, Redis cache, Application controller).
 
@@ -58,7 +53,7 @@ If you do not use an existing Argo CD instance, then Harness will install the fo
 
 See [Harness GitOps Basics](harness-git-ops-basics.md).
 
-## Step 1: Add an Agent
+## Add an Agent
 
 Ensure your Harness Project has the **Continuous Delivery** module enabled.
 
@@ -72,33 +67,39 @@ The Harness GitOps **Overview**, **Applications**, and **Settings** appear. If t
 
 All entities other than Applications are in **Settings**.
 
-Click **Settings**. The Harness GitOps settings appear.
+Select **Settings**. The Harness GitOps settings appear.
 
 ![](./static/install-a-harness-git-ops-agent-88.png)
 
-Click **GitOps** **Agents**.
+Select **GitOps** > **Agents**.
 
-Click **New GitOps Agent**. The Agent wizard appears.
+Select **New GitOps Agent**. The Agent wizard appears.
 
-## Option: Harness GitOps Agent with No Existing Argo CD Project
+## Harness GitOps Agent without an existing Argo CD project
 
 In **Getting started with Harness GitOps**, you have the option of installing a new Harness GitOps Agent with or without an existing Argo CD instances.
 
-Click **No**, and then click **Start**.
+Select **No**, and then click **Start**.
 
 In **Name**, enter the name for the new Agent.
 
 In **Namespace**, enter the namespace where you want to install the Harness GitOps Agent. Typically, this is the target namespace for your deployment.
 
-Click **Next**. The **Review YAML** settings appear.
+Select **Next**. The **Download YAML** or **Download Helm Chart** settings appear.
 
-This is the manifest YAML for the Harness GitOps Agent. You will download this YAML file and run it in your Harness GitOps Agent cluster.
+![](./static/install-a-harness-git-ops-agent-95.png)
 
-## Option: Harness GitOps Agent with Existing Argo CD Project
+The **YAML** option lets you download the manifest YAML for the Harness GitOps Agent. You can download this YAML file and run it in your Harness GitOps Agent cluster.
+
+The **Helm Chart** option lets you download a `helm-chart` file for the Harness GitOps Agent. You can download this file and install it in your Harness GitOps Agent cluster.
+
+![](./static/install-a-harness-git-ops-agent-96.png)
+
+## Harness GitOps Agent with Existing Argo CD Project
 
 In **Getting started with Harness GitOps**, you have the option of installing a new Harness GitOps Agent with or without an existing Argo CD instances.
 
-Click **Yes**, and then click **Start**.
+Select **Yes**, and then select **Start**.
 
 In **Name**, enter the name for the existing Agent CD Project. For example, **default** in the this example:
 
@@ -106,15 +107,27 @@ In **Name**, enter the name for the existing Agent CD Project. For example, **de
 
 In **Namespace**, enter the namespace where you want to install the Harness GitOps Agent. Typically, this is the target namespace for your deployment.
 
-Click **Next**. The **Review YAML** settings appear.
+Select **Next**. The **Download YAML** or **Download Helm Chart** settings appear.
 
-This is the manifest YAML for the Harness GitOps Agent. You will download this YAML file and run it in your Harness GitOps Agent cluster.
+The **YAML** option lets you download the manifest YAML for the Harness GitOps Agent. You can download this YAML file and run it in your Harness GitOps Agent cluster.
 
-Once you have installed the Agent, Harness will start importing all the entities from the existing Argo CD Project.
+The **Helm Chart** option lets you download a `helm-chart` file for the Harness GitOps Agent. You can download this file and install it in your Harness GitOps Agent cluster.
 
-## Step 2: Install the Agent
+Once you have installed the Agent by using any of the above options, Harness will start importing all the entities from the existing Argo CD Project.
 
-Click **Download & Continue**. You are prompted to save the YAML file.
+:::note
+
+Make sure that you deploy only one GitOps Agent per Argo CD namespace. Deploying multiple Agents created in different projects or accounts can lead to unpredictable behaviour.
+
+Harness supports mapping Argo CD projects into Harness projects through the Agent that controls the Argo CD deployment. When importing Argo CD projects, Harness maps Argo CD projects into Harness projects that belong to one account.
+
+Enabling multiple Agents in one Argo CD namespace implies cross-account resource sharing which Harness does not support.
+
+:::
+
+## Install the Agent
+
+Select **Download & Continue**. You are prompted to save the YAML file.
 
 Open a terminal and navigate to the folder where you downloaded the YAML file.
 
@@ -127,15 +140,21 @@ For example, here's a typical GKE login:
 gcloud container clusters get-credentials <cluster_name> --zone us-central1-c --project <project_name>
 ```
 
-Run the following command to apply the YAML file you downloaded (in this example, `default` was the namespace entered in the **Namespace** setting):
+In case of **YAML**, run the following command to apply the YAML file you downloaded (in this example, the namespace entered in the **Namespace** setting is `default`):
 
 ```
 kubectl apply -f gitops-agent.yaml -n default
 ```
 
+In case of **Helm Chart**, run the following command to install the `helm-chart` file you downloaded (in this example, the namespace entered in the **Namespace** setting is `default`):
+
+```
+helm install gitops-agent ./gitops-agent.tgz -n default
+```
+
 In the following output example you can see all of the Harness GitOps objects created in Kubernetes.
 
-This example output is for installing a new Harness GitOps Agent without using an existing Argo CD instance.
+This example output is for installing a new Harness GitOps Agent without using an existing Argo CD instance using the YAML.
 
 ```
 % kubectl apply -f harness-gitops-agent.yaml -n default  
@@ -185,13 +204,13 @@ If the Harness GitOps Agent is being deployed to a cluster running Kubernetes v1
 
 :::
 
-Back in Harness, click **Continue**.
+Back in Harness, select **Continue**.
 
 Harness indicates that the Harness GitOps Agents is registered.
 
 ![](./static/install-a-harness-git-ops-agent-90.png)
 
-Click **Continue**.
+Select **Continue**.
 
 :::note
 
@@ -209,7 +228,7 @@ In your cloud platform Kubernetes cluster you can see the agent workload:
 
 Now that you have the Harness GitOps Agent installed, running, and registered, you can configure the remaining components.
 
-## Review: Argo CD and Harness Project Mapping
+## Argo CD and Harness project mapping
 
 Once you have installed the Agent, Harness will create its own Argo CD Project in the cluster and name it with a random string.
 
@@ -223,7 +242,7 @@ If you used an existing Argo CD Project, you will see the existing Argo CD Proje
 
 See [Entity Identifier Reference](../../platform/20_References/entity-identifier-reference.md).
 
-### Mapping additional Argo CD projects to Harness Projects
+### Mapping additional Argo CD projects to Harness projects
 
 When you install a Harness GitOps Agent, Harness can import your existing Argo CD entities into Harness GitOps. We call this Bring Your Own Argo CD (BYOA).
 
@@ -233,13 +252,105 @@ Also, whenever new entities are created in mapped Argo CD projects, they are add
 
 For steps on setting up the mapping and import, go to [Map Argo projects to Harness GitOps Projects](multiple-argo-to-single-harness.md).
 
+## Proxy support
+
+The Harness GitOps Agent can work on environments where traffic is routed through a proxy. Perform the following steps to configure proxy support for the agent.
+
+1. Make sure that the agent is running in HTTP mode.  
+   To verify, check if the property/config `GITOPS_SERVICE_PROTOCOL` value is set to `HTTP1` in the `configmap({agentname}-agent)` present in the YAML after you create the agent.  
+   `GITOPS_SERVICE_PROTOCOL: HTTP1`
+2. Add a property/config `HTTPS_PROXY`, and add proxy details, such as URL, port, and auth details as its value in the configmap mentioned in Step 1. For example, `HTTPS_PROXY: "https://squid.proxy-test:3128"`.
+3. Add an environment variable `NO_PROXY` in the Harness GitOps Agent deployment with the following value.  
+   ```
+   localhost,argocd-repo-server,argocd-dex-server,argocd-redis,127.0.0.1,$(KUBERNETES_SERVICE_HOST)
+   ```
+### Proxy setup for testing
+
+   Use the following YAML example to install proxy in any other environment.
+   
+   ```
+   ---
+   apiVersion: v1
+   kind: ConfigMap
+   metadata:
+     name: script-cm
+     namespace: proxy-test
+   data:
+     entrypoint.sh: |-
+       #!/bin/bash
+       echo "Start"
+       apt-get -q update && apt-get -qy --no-install-recommends install python squid curl && apt-get clean;
+       sed -i "s/^#acl localnet/acl localnet/" /etc/squid/squid.conf;
+       sed -i "s/^#http_access allow localnet/http_access allow localnet/" /etc/squid/squid.conf;
+       mkdir -p /var/cache/squid;
+       cp /etc/squid/squid.conf /etc/squid/squid.conf.in;
+       squid
+       sleep 15
+       cd /var/log/squid
+       echo "==========================================ls"
+       ls
+       tail -f access.log
+       echo "==========================================End"
+   ---
+   apiVersion: apps/v1
+   kind: Deployment
+   metadata:
+     name: squid
+     namespace: proxy-test
+     labels:
+       app.kubernetes.io/name: squid
+   spec:
+     replicas: 1
+     selector:
+       matchLabels:
+         app.kubernetes.io/name: squid
+     template:
+       metadata:
+         labels:
+           app.kubernetes.io/name: squid
+       spec:
+         containers:
+           - name: squid
+             image: debian:bullseye
+             imagePullPolicy: Always
+             command:
+               - /bin/entrypoint.sh
+             volumeMounts:
+             - name: configmap-volume
+               mountPath: /bin/entrypoint.sh
+               readOnly: true
+               subPath: entrypoint.sh  
+         volumes:
+          - name: configmap-volume
+            configMap:
+             defaultMode: 0700
+             name: script-cm 
+   ---
+   apiVersion: v1
+   kind: Service
+   metadata:
+     labels:
+       app.kubernetes.io/name: squid
+     name: squid
+     namespace: proxy-test
+   spec:
+     ports:
+       - name: tcp-proxy
+         port: 3128
+         targetPort: 3128
+     selector:
+       app.kubernetes.io/name: squid
+   ---
+   ```
+   
+
 ## GitOps Agent FAQs
 
 Here are some answers to commonly asked GitOps Agent questions.
 
 ### What version of GitOps Agent supports what version of Repo server, Redis cache, and ApplicationSet?
 
-GitOps Agent v0.33.0 supports redis:6.2.6-alpine, Repo server [argocd:v2.3.4](http://quay.io/argoproj/argocd:v2.3.4), and [argocd-applicationset:v0.4.1](http://quay.io/argoproj/argocd-applicationset:v0.4.1).
+GitOps Agent v0.52.0 supports redis:7.0.8-alpine, Repo server [argocd:v2.5.16](http://quay.io/argoproj/argocd:v2.5.16), and [argocd-applicationset:v0.4.1](http://quay.io/argoproj/argocd-applicationset:v0.4.1).
 
 ### How long is a GitOps Agent version supported?
 
@@ -257,7 +368,7 @@ The Argo CD components upgrade must be done manually.
 
 The following solutions can help with Agent installation errors.
 
-### Agent Took Too Long to Respond
+### Agent took too long to respond
 
 If you see the error `the Agent took too long to respond` during installation of an Agent with an existing Argo CD instance, the Agent cannot connect to the Redis/repo server and needs additional `NetworkPolicy` settings.
 
@@ -275,5 +386,7 @@ The following table lists the `NetworkPolicy` objects for HA and non-HA Agents, 
 | `argocd-redis-network-policy` | ![](static/argocd-redis-network-policy.png)  |
 | `argocd-repo-server-network-policy` | ![](static/argocd-repo-server-network-policy-nonha.png)  |
 
- 
+## References
 
+* [Harness GitOps Basics](harness-git-ops-basics.md)
+* [Harness CD GitOps Quickstart](harness-cd-git-ops-quickstart.md)

@@ -1,5 +1,5 @@
 ---
-title: Connect to Harness Container Image Registry Using Docker Connector
+title: Connect to Harness container image registry Using Docker connector
 description: This topic explains how to set up the account-level Docker Connector to connect to the Harness Container Image Registry.
 sidebar_position: 4
 helpdocs_topic_id: my8n93rxnw
@@ -22,17 +22,17 @@ You can override the default behavior at the Account level and the Stage level:
 
 Since you and the Harness Delegate are already connected to Harness securely, there are no additional connections to worry about.
 
-:::note
+:::info
 
-If you choose to override the `harnessImageConnector`, you may also avoid triggering any rate limiting or throttling.This topic explains how to set up the Docker Connector to connect to the Harness Container Image Registry.
+If you choose to override the `harnessImageConnector`, you may also avoid triggering any rate limiting or throttling. This topic explains how to set up the Docker Connector to connect to the Harness Container Image Registry.
 
 :::
 
 ### Before you begin
 
-* [CI Enterprise Concept](../../../continuous-integration/ci-quickstarts/ci-concepts.md)
+* [CI pipeline basics](../../../continuous-integration/ci-quickstarts/ci-pipeline-basics.md)
 * [Harness Delegate Overview](/docs/platform/2_Delegates/delegate-concepts/delegate-overview.md)
-* [Docker Connector Settings Reference](../../7_Connectors/Cloud-providers/ref-cloud-providers/docker-registry-connector-settings-reference.md)
+* [Docker Connector Settings Reference](/docs/platform/connectors/cloud-providers/ref-cloud-providers/docker-registry-connector-settings-reference)
 
 ### Review: Allowlist app.harness.io
 
@@ -50,7 +50,7 @@ As a general best practice, you should allowlist Harness Domains and IPs. For mo
 
 :::note
 
-You must create the Harness Docker Connector at the Account level. Make sure that you have the **Account** > **Connectors** > **Create/Edit/View** permission for Harness Platform. See [Permission Reference](../../4_Role-Based-Access-Control/ref-access-management/permissions-reference.md) for details on the list of permissions.
+You must create the Harness Docker Connector at the Account level. Make sure that you have the [permissions](../../role-based-access-control/permissions-reference) to create/edit and view connectors at the Account [scope](../../role-based-access-control/rbac-in-harness#permissions-hierarchy-scopes).
 
 :::
 
@@ -69,7 +69,7 @@ You must create the Harness Docker Connector at the Account level. Make sure tha
 3. In **Name**, enter a name for this connector.
    Harness automatically generates the corresponding Id ([entity identifier](../../20_References/entity-identifier-reference.md)).
    If you want to override the account-level connector, modify the Id and set it to `harnessImage`. You must use the Id `harnessImage`.
-   Harness gives precedence to the connector with the `harnessImage` identifier, and uses it to pull from the Harness Container Image Registry, as opposed to pulling from DockerHub directly.
+   Harness gives precedence to the connector with the `harnessImage` identifier, and uses it to pull from the Harness Container Image Registry, as opposed to pulling from Docker Hub directly.
 4. Click **Continue**.
 
 ### Step 2: Enter credentials
@@ -86,7 +86,7 @@ Click **Continue**.
 
 :::tip
 
-By default, Harness uses anonymous access to [Harness DockerHub](https://hub.docker.com/u/harness) to pull images. If you experience rate limiting issues when pulling images anonymously, select **Username and Password** for **Authentication** and provide login details.
+By default, Harness uses anonymous access to [Harness Docker Hub](https://hub.docker.com/u/harness) to pull images. If you experience rate limiting issues when pulling images anonymously, select **Username and Password** for **Authentication** and provide login details.
 
 :::
 
@@ -124,7 +124,5 @@ If a connector with`harnessImage` identifier already exists on your **Account**,
 
 ### See also
 
-* [Permission Reference](../../../platform/4_Role-Based-Access-Control/ref-access-management/permissions-reference.md)
-* [Harness CI Image List](/docs/continuous-integration/use-ci/set-up-build-infrastructure/harness-ci.md)
-* [CI Build Image Updates](/docs/continuous-integration/use-ci/set-up-build-infrastructure/ci-build-image-updates.md)
-
+* [Permission Reference](../../role-based-access-control/permissions-reference)
+* [Harness CI Images](/docs/continuous-integration/use-ci/set-up-build-infrastructure/harness-ci.md)

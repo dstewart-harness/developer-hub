@@ -4,6 +4,13 @@ description: Set freeze windows for deployments.
 sidebar_position: 8
 ---
 
+This topic covers the Harness deployment freeze feature, including how to set up freeze windows, access control, notifications, and best practices.
+
+## Important notes
+
+- Deployment freeze does not apply to [Harness GitOps PR pipelines](/docs/continuous-delivery/gitops/harness-git-ops-application-set-tutorial.md).
+- You cannot edit enabled deployment freeze windows. If the deployment freeze window you want to change is enabled, you must first disable it, make your changes, then enable it again.
+
 ## Deployment freeze summary
 
 If you are new to deployment freezes, review the following summary.
@@ -24,20 +31,20 @@ In Harness, you set up a a deployment freeze as a **freeze window**.
 
 A freeze window is defined using one or more rules and a schedule. The rules define the Harness orgs, projects, services, and environments to freeze. 
 
-![deployment freeze rule](../cd-deployments-category/static/deployment-freeze-rule.png)
+![deployment freeze rule](./static/deployment-freeze-rule.png)
 
 The schedule defines when to freeze deployments and the recurrence, if any (yearly, monthly, etc).
 
-![freeze schedule](../cd-deployments-category/static/deployment-freeze-schedule.png)
+![freeze recurrence](./static/deployment-freeze-recurrence.png)
 
 
 ### Freeze window scope
 
 Freeze windows can be set at the Harness account, org, or project levels, with the following differences:
 
-- **Account**: rules can apply to all or multiple **orgs and projects** in the account.
-- **Org**: rules can apply to all or multiple **projects** in the org.
-- **Project**: rules can apply to all or multiple **services and environments** in the project.
+- **Account**: rules can apply to specific, multiple, or all services or environments in the account.
+- **Org**: rules can apply to specific, multiple, or all services or environments in the org.
+- **Project**: rules can apply to specific, multiple, or all services, environments, or pipelines in the project.
 
 ### Exceptions
 
@@ -49,7 +56,9 @@ Exceptions save you the time of having to select multiple subordinate entities i
 
 If a pipeline is running and a freeze happens, the pipeline will continue to run until the current stage of the pipeline has executed. Once that stage executes, the freeze is implemented and no further stages will execute.
 
-If the freeze happens to a running pipeline and it is unable to complete all stages, the status of the pipeline execution is listed as **Aborted By Freeze**.
+Pipelines that become frozen during execution and cannot complete all stages are marked as **Aborted By Freeze**. Hovering over the pipeline status in its execution history displays the associated freeze windows that failed the pipeline execution.
+
+![associated freeze windows](./static/view-associated-freeze-windows.png)
 
 ### Freeze windows only apply to CD stages
 
@@ -62,6 +71,12 @@ If a pipeline includes a CD stage and other module stages, like CI and Feature F
 You can create triggers in Harness to execute a pipeline under multiple conditions, such as a change to a Helm Chart, artifact, etc.
 
 When a freeze is running, triggers will not execute frozen pipelines. The trigger invocations are rejected. 
+
+:::info 
+
+Pipelines executed with custom webhook triggers can override deployment freeze. This can be enabled by associating the API key or Service Account API key authorization with deployment freeze override permissions.
+
+:::
 
 You can create a freeze window notification to notify users when a trigger invocation was rejected. Notifications are described below.
 
@@ -78,10 +93,6 @@ Deployment freeze access control is configured using the **Deployment Freeze** r
 - **Manage**: add/edit/delete freeze at any level.
 - **Override**: When a deployment is required during a freeze duration, users with this role can still perform deployments.
 - **Global**: enable/disable freeze across all deployments at account, org, and project levels.
-
-### Important notes
-
-Deployment freeze does not apply to [Harness GitOps PR pipelines](/docs/continuous-delivery/gitops/harness-git-ops-application-set-tutorial.md).
 
 ## Create a freeze window
 
@@ -147,10 +158,17 @@ import TabItem from '@theme/TabItem';
    - `m` for minutes
 
 9.  In **Recurrence**, select how often to repeat the freeze window and a recurrence end date.
+    
+    For recurrence, you can select: 
+    - **Does not repeat**: to not repeat the recurrence of a freeze window. 
+    - **Daily**: to freeze window daily.
+    - **Weekly**: to freeze window weekly.
+    - **Monthly**: to freeze window monthly. You can select the number of months to freeze window once every `n` months. For example, select 3 to freeze window once every 3 months.
+    - **Yearly**: to freeze window yearly.
 
    The schedule will look something like this:
 
-   ![schedule](../cd-deployments-category/static/deployment-freeze-schedule.png)
+   ![schedule](./static/deployment-freeze-schedule.png)
 
 10. Click **Save**.
 
@@ -215,6 +233,8 @@ You can notify users of the following freeze window events:
 
 - Freeze window is enabled.
 - Deployments are rejected due to freeze window. This includes any trigger invocations that are rejected due to a freeze window.
+  
+In **Freeze Notification Message**, you can add a custom notification message.
 
 You can use the following notification methods:
 
@@ -236,7 +256,7 @@ To enable notifications, do the following:
 3. Enter a name for the notification and click **Continue**.
 4. In **Configure the conditions for which you want to be notified**, select the freeze window events that send notifications.
 5. Click **Continue**.
-6. In **Notification Method**, configure one of the methods described in [Add a Pipeline Notification Strategy](../x-platform-cd-features/cd-steps/notifications/notify-users-of-pipeline-events.md).
+6. In **Notification Method**, configure one of the methods described in [Add a Pipeline Notification Strategy](../x-platform-cd-features/cd-steps/notify-users-of-pipeline-events.md
 7. Click **Finish**.
 8. Click **Apply Changes**.
 
@@ -265,7 +285,7 @@ To enable notifications, do the following:
             - john.doe@harness.io
       enabled: true
 ```
-For examples of all methods, see [Add a Pipeline Notification Strategy](../x-platform-cd-features/cd-steps/notifications/notify-users-of-pipeline-events.md).
+For examples of all methods, see [Add a Pipeline Notification Strategy](../x-platform-cd-features/cd-steps/notify-users-of-pipeline-events.md
 
 ```mdx-code-block
   </TabItem>

@@ -10,6 +10,13 @@ helpdocs_is_published: true
 
 import Sixty from '/docs/feature-flags/shared/p-sdk-run60seconds.md'
 
+import Smpno from '../shared/note-smp-not-compatible.md'
+
+import Closeclient from '../shared/close-sdk-client.md'
+
+
+<Smpno />
+
 This topic describes how to use the Harness Feature Flags Android SDK for your Android application. 
 
 For getting started quickly, you can use our [sample code from the SDK README](https://github.com/harness/ff-android-client-sdk/blob/main/README.md). You can also [clone](https://docs.github.com/en/repositories/creating-and-managing-repositories/cloning-a-repository) and run a sample application from the [Android SDK GitHub Repository.](https://github.com/harness/ff-android-client-sdk)
@@ -27,7 +34,7 @@ Make sure you read and understand:
 
 ## Version
 
-The current version of this SDK is **1.0.18.** To use this version of the SDK, you also need to use Android API level 19 or higher.
+The current version of this SDK is **1.1.3.** To use this version of the SDK, you also need to use Android API level 19 or higher.
 
 ## Requirements
 
@@ -43,7 +50,7 @@ Then ensure you:
 * Create an Android application to use with the SDK, or [clone our sample application](https://github.com/harness/ff-android-client-sdk) to use.
 * Download the SDK from our [GitHub Repository](https://github.com/harness/ff-android-client-sdk).
 * [Create a Feature Flag on the Harness Platform](/docs/feature-flags/ff-creating-flag/create-a-feature-flag). If you are following along with the SDK README sample code, make sure your flag is called `harnessappdemodarkmode`.
-* [Create a Client SDK key and make a copy of it](docs/feature-flags/ff-creating-flag/create-a-project#create-an-sdk-key).
+* [Create a Client SDK key and make a copy of it](/docs/feature-flags/ff-creating-flag/create-a-project#create-an-sdk-key).
 
 ## Install the SDK
 
@@ -158,7 +165,7 @@ For example:
 
 To initialize the SDK, you must pass in the following:
 
-* `YOUR_API_KEY` - The client SDK key you created when [creating the Feature Flag](docs/feature-flags/ff-creating-flag/create-a-project#create-an-sdk-key).
+* `YOUR_API_KEY` - The client SDK key you created when [creating the Feature Flag](/docs/feature-flags/ff-creating-flag/create-a-project#create-an-sdk-key).
 * Any configuration options you want to use.
 * The Target you want to evaluate.
 
@@ -185,7 +192,7 @@ There are different methods for the different Variation types and for each metho
 * Identifier of the Flag you want to evaluate
 * The default Variation
 
-:::note
+:::info note
 The Flag is evaluated against the Target you pass in when initializing the SDK.
 :::
 
@@ -273,16 +280,16 @@ When you receive a response showing the current status of your Feature Flag, go 
 
 <Sixty />
 
-## Close the SDK
+## Close the SDK client
 
-To avoid potential memory leaks, when you no longer need the SDK, you should close it. For example, when the app is closed, also close the SDK.
+<Closeclient />
 
 To close the SDK, call this method:
-
 
 ```
 CfClient.getInstance().destroy()
 ```
+
 ## Additional options
 
 ### Configure your logger

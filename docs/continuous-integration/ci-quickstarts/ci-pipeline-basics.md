@@ -1,18 +1,18 @@
 ---
-title: CI pipeline concepts
+title: CI pipeline basics
 description: Basic terminology and concepts related to CI pipelines
-sidebar_position: 20
+sidebar_position: 30
 helpdocs_topic_id: 3amcd8hn53
 helpdocs_category_id: pjovrkldfq
 helpdocs_is_private: false
 helpdocs_is_published: true
 ---
 
-This topic covers basic terminology and concepts related to CI pipelines. For general Harness Platform terminology and concepts, go to [Harness key concepts](../../getting-started/learn-harness-key-concepts.md). For information about creating pipelines and configuring pipeline components go to [Prepare pipeline components](../use-ci/prep-ci-pipeline-components.md).
+This topic covers basic terminology and concepts related to CI pipelines. For general Harness Platform terminology and concepts, go to [Harness key concepts](../../getting-started/learn-harness-key-concepts.md). For information about creating pipelines and configuring pipeline components go to [CI pipeline creation overview](../use-ci/prep-ci-pipeline-components.md).
 
 ## Pipelines
 
-A CI pipeline is an end-to-end integration workflow that, in its simplest form, pulls a codebase, builds an artifact, and then uploads the artifact to storage or a registry such as DockerHub, Google Cloud Registry, JFrog Artifactory, and many others.
+A CI pipeline is an end-to-end integration workflow that, in its simplest form, pulls a codebase, builds an artifact, and then uploads the artifact to storage or a registry such as Docker Hub, Google Cloud Registry, JFrog Artifactory, and many others.
 
 You can run a pipeline manually or set up [triggers](#triggers) to automatically run it on a schedule or when an event occurs, such as a Git merge in your codebase.
 
@@ -20,12 +20,12 @@ Pipelines are comprised of stages and steps.
 
 ### Stages
 
-A CI stage is a subset of a pipeline that contains one major segment of the CI workflow. A **Build** stage includes [steps](#steps) for building, pushing, and testing your code. For more information, go to [Prepare pipeline components](../use-ci/prep-ci-pipeline-components.md).
+A CI stage is a subset of a pipeline that contains one major segment of the CI workflow. A **Build** stage includes [steps](#steps) for building, pushing, and testing your code. For more information, go to [CI pipeline creation overview](../use-ci/prep-ci-pipeline-components.md).
 
 <details>
 <summary>What is build infrastructure?</summary>
 
-All stages have an infrastructure definition, which represents the build infrastructure used by a CI pipeline: the target clusters, hosts, and so on. Build infrastructure components and specifications depend on the build infrastructure you choose. For more information, go to [Which build infrastructure is right for me?](../use-ci/set-up-build-infrastructure/which-build-infrastructure-is-right-for-me.md).
+All stages have an infrastructure definition, which represents the build infrastructure used by a CI pipeline: the target clusters, hosts, and so on. Build infrastructure components and specifications depend on the build infrastructure you choose. For more information, go to [Which build infrastructure is right for me](../use-ci/set-up-build-infrastructure/which-build-infrastructure-is-right-for-me.md).
 
 </details>
 
@@ -46,31 +46,31 @@ For example, the maven `m2` repo is stored in `/root/.m2` by default. If your Bu
 
 A stage contains one or more steps. Each step is a series of commands that perform a task. For example, A **Build and Push** step builds an image and pushes it to a cloud repo, a **Run** step runs a series of shell commands, and so on.
 
-Harness CI includes an extensive Step Library for common CI tasks: building artifacts, uploading to cloud repos, running tests, and so on. For more information, go to [Prepare pipeline components](../use-ci/prep-ci-pipeline-components.md).
+Harness CI includes an extensive Step Library for common CI tasks: building artifacts, uploading to cloud repos, running tests, and so on. For more information, go to [CI pipeline creation overview](../use-ci/prep-ci-pipeline-components.md).
 
 ![](./static/ci-pipeline-basics-510.png)
 
 ## Tests
 
-In a CI pipeline, you can run a variety of tests, such as integration tests, functional tests, and unit tests. To do this, you can use a [Run Tests step](../ci-technical-reference/configure-run-tests-step-settings.md) or a [Run step](../use-ci/run-ci-scripts/run-a-script-in-a-ci-stage.md). You must use the **Run Tests** step to [enable Test Intelligence](../use-ci/set-up-test-intelligence/set-up-test-intelligence.md).
+In a CI pipeline, you can [run a variety of tests](../use-ci/set-up-test-intelligence/run-tests-in-ci.md), such as integration tests, functional tests, and unit tests. To do this, you can use a [Run Tests step](../use-ci/set-up-test-intelligence/set-up-test-intelligence.md#add-the-run-tests-step) or a [Run step](../use-ci/run-ci-scripts/run-step-settings.md). You must use the **Run Tests** step to [enable Test Intelligence](../use-ci/set-up-test-intelligence/set-up-test-intelligence.md).
 
 ### Test Intelligence
 
-Test Intelligence speeds up your test cycles by running only the unit tests required to confirm the quality of the code changes that triggered a build. You can easily see the code changes and gaps in your unit test plan. Test Intelligence also identifies negative trends and provides actionable insights to improve quality. For more information, go to [Get started with Test Intelligence](test-intelligence-concepts.md).
+Test Intelligence speeds up your test cycles by running only the unit tests required to confirm the quality of the code changes that triggered a build. You can easily see the code changes and gaps in your unit test plan. Test Intelligence also identifies negative trends and provides actionable insights to improve quality. For more information, go to [Enable Test Intelligence](../use-ci/set-up-test-intelligence/set-up-test-intelligence.md).
 
 ## Plugins
 
 Plugins perform predefined tasks, such as deploying code, publishing artifacts, sending notifications, and more. They are configured as steps in your CI pipelines.
 
-Docker Plugins are Docker containers that perform predefined tasks and run in **Plugin** steps. The Drone community maintains an [extensive plugin library](https://plugins.drone.io/) for specific CI workflows. You can customize and extend your build processes using existing plugins or [write your own plugins](https://harness.io/blog/continuous-integration/write-first-plugin-for-cie/).
+Docker Plugins are Docker containers that perform predefined tasks and run in **Plugin** steps. The Drone community maintains an [extensive plugin library](https://plugins.drone.io/) for specific CI workflows. You can customize and extend your build processes using existing plugins or [write your own plugins](../use-ci/use-drone-plugins/custom_plugins.md).
 
-For more information, go to [Use Plugins](/docs/category/use-plugins/), [Plugin step settings](../ci-technical-reference/plugin-steps/plugin-step-settings-reference.md), and [Run a Drone plugin in CI](../use-ci/use-drone-plugins/run-a-drone-plugin-in-ci.md).
+For more information, go to [Use Plugins](/docs/category/use-plugins/), [Plugin step settings](../use-ci/use-drone-plugins/plugin-step-settings-reference.md), and [Run a Drone plugin in CI](../use-ci/use-drone-plugins/run-a-drone-plugin-in-ci.md).
 
-If you're using Harness Cloud build infrastructure, you can also use the [GitHub Action plugin step](../ci-technical-reference/plugin-steps/ci-github-action-step.md) and [Bitrise plugin step](../ci-technical-reference/plugin-steps/ci-bitrise-plugin.md) to run GitHub Actions and Bitrise Integrations in your CI pipelines.
+If you're using Harness Cloud build infrastructure, you can also use the [GitHub Action plugin step](../use-ci/use-drone-plugins/ci-github-action-step.md) and [Bitrise plugin step](../use-ci/use-drone-plugins/ci-bitrise-plugin.md) to run GitHub Actions and Bitrise Integrations in your CI pipelines.
 
 ## Dependencies and background services
 
-If you decide to split your pipeline into multiple stages, you need to make sure each stage has access to any dependencies. An example of a use case for background services is when your unit tests require a running Redis server. Background services can run in an isolated container or on the host. For information about configuring and calling background services, go to [Background step settings](../ci-technical-reference/background-step-settings.md).
+If you decide to split your pipeline into multiple stages, you need to make sure each stage has access to any dependencies. An example of a use case for background services is when your unit tests require a running Redis server. Background services can run in an isolated container or on the host. For information about configuring and calling background services, go to [Background step settings](../use-ci/manage-dependencies/background-step-settings.md).
 
 ### Caching
 
@@ -122,4 +122,4 @@ You can run your pipelines manually or use [triggers](/docs/category/triggers) t
 
 ### Dashboards
 
-The **Overview** screen provides a high-level view of all your builds, regardless of status (successful, failed, cancelled, or expired) and the percentage of successful builds for individual codebases. You can easily see where your builds have failed and [drill down into specific builds](../use-ci/view-your-builds/viewing-builds.md) to troubleshoot and analyze the root causes.
+The **Overview** screen provides a high-level view of all your builds, regardless of status (successful, failed, cancelled, or expired) and the percentage of successful builds for individual codebases. You can easily see where your builds have failed and [drill down into specific builds](../use-ci/viewing-builds.md) to troubleshoot and analyze the root causes.

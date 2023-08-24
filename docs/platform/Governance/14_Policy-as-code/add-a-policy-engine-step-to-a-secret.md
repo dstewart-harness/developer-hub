@@ -1,7 +1,7 @@
 ---
-title: Use Harness Policy As Code For Secrets
+title: Use Harness Policy as Code for secrets
 description: Add a Policy step to your Secret.
-# sidebar_position: 2
+sidebar_position: 4
 helpdocs_topic_id: ozw30qez44
 helpdocs_category_id: zoc8fpiifm
 helpdocs_is_private: false
@@ -28,19 +28,16 @@ This topic describes how to add a Policy step to a Secret.
 
 In Harness, go to **Account Settings**.
 
-Click **Policies**.
+Select **Policies**.
 
-![](./static/add-a-policy-engine-step-to-a-secret-46.png)
-Click **Policies**, and then click **New Policy**.
-
-![](./static/add-a-policy-engine-step-to-a-secret-47.png)
+Select **Policies**, and then select **New Policy**.
 **New Policy** settings appear.
+
+![](./static/add-a-policy-engine-step-to-a-secret-48.png)
 
 Enter a **Name** for your policy and click **Apply**.
 
-![](./static/add-a-policy-engine-step-to-a-secret-48.png)
 Next, you need to add your policy. Enter your own Rego policy. For example:
-
 
 ```
 package docexamplepolicy  

@@ -1,7 +1,7 @@
 ---
 title: Configure ECG for AutoStopping Rules
 description: This topic describes how to configure ECG for AutoStopping Rules.
-# sidebar_position: 2
+sidebar_position: 50
 helpdocs_topic_id: ux8wo1l75q
 helpdocs_category_id: 6bw1qej23v
 helpdocs_is_private: false
@@ -68,7 +68,7 @@ For example in the following URL, the account ID is `1a2b3c`: `https://app.har
 2. Copy the hostname.
    
 
-![](./static%20/configure-ecg-for-auto-stopping-rules-00.png)
+![](./static/configure-ecg-for-auto-stopping-rules-00.png)
 
 
 ##### Example

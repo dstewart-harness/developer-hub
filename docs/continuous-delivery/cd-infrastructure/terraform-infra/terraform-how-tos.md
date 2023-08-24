@@ -10,21 +10,63 @@ helpdocs_is_published: true
 
 Harness has first-class support for HashiCorp [Terraform](https://www.terraform.io/) as an infrastructure provisioner.
 
-See the following Terraform How-tos:
+You can use Harness with Terraform in the following ways:
 
-* [Provision Target Deployment Infra Dynamically with Terraform](/docs/continuous-delivery/cd-infrastructure/terraform-infra/provision-infra-dynamically-with-terraform)
-* [Plan Terraform Provisioning with the Terraform Plan Step](run-a-terraform-plan-with-the-terraform-plan-step)
-* [Provision with the Terraform Apply Step](run-a-terraform-plan-with-the-terraform-apply-step)
-* [Remove Provisioned Infra with the Terraform Destroy Step](remove-provisioned-infra-with-terraform-destroy)
-* [Rollback Provisioned Infra with the Terraform Rollback Step](rollback-provisioned-infra-with-the-terraform-rollback-step)
+* **Local provisioning:** you can run configuration files on the Harness delegate(s) installed in your environment.
+* **Terraform Cloud/Enterprise:** you can run Terraform Cloud workspaces by connecting Harness to your Terraform Cloud account.
 
-For a conceptual overview of Harness Terraform integration, see [Terraform Provisioning with Harness](terraform-provisioning-with-harness).
+You can do both methods in the same stage if you want.
 
-## Important: Install Terraform on Delegates
+For a conceptual overview of Harness Terraform integration, go to [Terraform Provisioning with Harness](/docs/continuous-delivery/cd-infrastructure/terraform-infra/terraform-provisioning-with-harness/).
 
-Terraform must be installed on the Delegate to use a Harness Terraform Provisioner. You can install Terraform manually or use the `INIT_SCRIPT` environment variable in the Delegate YAML.
+## Running Terraform Cloud workspaces how-tos
 
-See [Build custom delegate images with third-party tools](/docs/platform/Delegates/customize-delegates/build-custom-delegate-images-with-third-party-tools).
+In addition to running Terraform configuration files locally on the Harness delegate, Harness supports running Terraform Cloud and Enterprise workspaces.
+
+For more information, go to  [Terraform Cloud deployments](/docs/continuous-delivery/cd-infrastructure/terraform-infra/terraform-cloud-deployments).
+
+## Running Terraform locally how-tos
+
+You can use the Harness Terraform steps to provision any resources. You simply add the steps in the Deploy or Custom stage **Execution**.
+
+For steps on how to run Terraform configuration files on Harness delegates installed in your environment, go to:
+
+* [Plan Terraform Provisioning with the Terraform Plan Step](/docs/continuous-delivery/cd-infrastructure/terraform-infra/run-a-terraform-plan-with-the-terraform-plan-step)
+* [Provision with the Terraform Apply Step](/docs/continuous-delivery/cd-infrastructure/terraform-infra/run-a-terraform-plan-with-the-terraform-apply-step)
+* [Remove Provisioned Infra with the Terraform Destroy Step](/docs/continuous-delivery/cd-infrastructure/terraform-infra/remove-provisioned-infra-with-terraform-destroy)
+* [Rollback Provisioned Infra with the Terraform Rollback Step](/docs/continuous-delivery/cd-infrastructure/terraform-infra/rollback-provisioned-infra-with-the-terraform-rollback-step)
+
+
+### Important: Install Terraform on delegates
+
+Terraform must be installed on the delegate to use **local** Terraform configuration files in Harness Terraform steps. This is not required for running Terraform Cloud/Enterprise workspaces.
+
+You can install Terraform manually or use the `INIT_SCRIPT` environment variable in the Delegate YAML.
+
+Go to [Build custom delegate images with third-party tools](/docs/platform/delegates/install-delegates/build-custom-delegate-images-with-third-party-tools/).
+
+The Harness delegate uses RedHat Universal Base Image (redhat/ubi8).
+
+Here's an example of the script to install Terraform:
+
+```bash
+#!/bin/bash
+
+# Update the system and install necessary tools
+sudo yum update -y
+sudo yum install -y curl unzip
+
+# Install Terraform
+TERRAFORM_VERSION="1.3.5"
+TERRAFORM_URL="https://releases.hashicorp.com/terraform/${TERRAFORM_VERSION}/terraform_${TERRAFORM_VERSION}_linux_amd64.zip"
+curl -LO $TERRAFORM_URL
+unzip terraform_${TERRAFORM_VERSION}_linux_amd64.zip
+sudo install terraform /usr/local/bin/
+rm terraform_${TERRAFORM_VERSION}_linux_amd64.zip
+
+# Check TF install
+terraform --version
+```
 
 ### Target OS and architecture
 
@@ -39,7 +81,7 @@ You will need to change the following scripts based on the operating system and 
 
 The recommended method for installing third party tools on your delegate is to create your own delegate image, push it to a container registry, and then to modify your delegate deployments to use your new custom image.
 
-For more information, go to [Build custom delegate images with third-party tools](https://developer.harness.io/docs/platform/delegates/customize-delegates/build-custom-delegate-images-with-third-party-tools/).
+For more information, go to [Build custom delegate images with third-party tools](/docs/platform/Delegates/install-delegates/build-custom-delegate-images-with-third-party-tools).
 
 ```dockerfile
 ARG DELEGATE_TAG=23.03.78705

@@ -25,7 +25,7 @@ For steps on using the Terraform Plan to provision the target infrastructure for
 
 Terraform must be installed on the Delegate to use a Harness Terraform Provisioner. You can install Terraform manually or use the `INIT_SCRIPT` environment variable in the Delegate YAML.
 
-See [Build custom delegate images with third-party tools](/docs/platform/Delegates/customize-delegates/build-custom-delegate-images-with-third-party-tools).
+See [Build custom delegate images with third-party tools](https://developer.harness.io/docs/platform/Delegates/install-delegates/build-custom-delegate-images-with-third-party-tools).
 
 
 ```bash
@@ -81,6 +81,32 @@ For example, if the name of the stage is **Terraform** and the name of the step 
 
 In **Timeout**, enter how long Harness should wait to complete the Terraform Plan step before failing the step.
 
+### Run on Remote Workspace
+
+:::note
+
+Currently, this feature is behind the feature flag `CD_TERRAFORM_CLOUD_CLI_NG`. Contact [Harness Support](mailto:support@harness.io) to enable the feature.
+
+:::
+
+Enable this option to identify whether the Terraform configuration uses a Terraform remote backend.
+
+When enabled, you cannot provide the workspace input in Harness. The workspace will be outlined in your configuration for the remote backend.
+
+Also, the remote backend is supported only when the **Configuration Type** is **Inline**.
+
+```
+terraform {
+  backend "remote" {
+    hostname     = "app.terraform.io"
+    organization = "your-organization"
+    workspaces {
+      name = "your-workspace"
+    }
+  }
+}
+```
+
 ### Command
 
 In **Command**, select **Apply or Destroy**.
@@ -126,6 +152,10 @@ When the plan is applied, the Harness Manager passes the encrypted data to the D
 
 The Delegate decrypts the encrypted plan and applies it using the `terraform apply` command.
 
+#### Limitations
+
+The Terraform plan size must not exceed the secret size limit for secrets in your default Secret Manager. For example, the AWS Secrets Manager has a limitation of 64KB. Other supported Secrets Managers support larger file sizes.
+
 ### Configuration File Repository
 
 **Configuration File Repository** is where the Terraform script and files you want to use are located.
@@ -138,7 +168,7 @@ The **Terraform Config File Store** settings appear.
 
 Click the provider where your files are hosted.
 
-![](./static/run-a-terraform-plan-with-the-terraform-plan-step-12.png)
+![](./static/provision-infra-dynamically-with-terraform-02.png)
 
 Select or create a Connector for your repo. For steps, see [Connect to a Git Repo](/docs/platform/Connectors/Code-Repositories/connect-to-code-repo) or [Artifactory Connector Settings Reference](/docs/platform/Connectors/Cloud-providers/ref-cloud-providers/artifactory-connector-settings-reference) (see **Artifactory with Terraform Scripts and Variable Definitions (.tfvars) Files**).
 
@@ -164,6 +194,16 @@ The following sections cover common Terraform Plan step options.
 
 See [Artifactory Connector Settings Reference](/docs/platform/Connectors/Cloud-providers/ref-cloud-providers/artifactory-connector-settings-reference) (see **Artifactory with Terraform Scripts and Variable Definitions (.tfvars) Files**).
 
+### AWS S3
+
+1. In **Region**, select the region where your bucket is stored.
+2. In **Bucket**, select the bucket where your Terraform files are stored (all buckets from the selected region that are available to the connector will be fetched).
+3. In **Folder Path**, enter the path from the root of the repo to the folder containing the script.
+
+   ![](./static/provision-infra-dynamically-with-terraform-09.png)
+
+Harness will fetch all files from specified folder.
+
 ### Source Module
 
 When you set up the file repo in **Configuration File Repository**, you use a Harness Connector to connect to the repo where the Terraform scripts are located.
@@ -176,6 +216,12 @@ If you do not select **Use Connector credentials**, Terraform will use the crede
 
 The **Use Connector credentials** setting is limited to Harness Git Connectors using SSH authentication (not HTTPS) and a token.
 
+When configuring the SSH key for the connector, exporting an SSH key with a passphrase for the module source is not supported. Configure an SSH Key without the passphrase.
+
+Here are some syntax examples to reference the Terraform module using the SSH protocol:
+
+```bash
+source = "git@github.com:your-username/your-private-module.git"
 ## Workspace
 
 Harness supports Terraform [workspaces](https://www.terraform.io/docs/state/workspaces.html). A Terraform workspace is a logical representation of one your infrastructures, such as Dev, QA, Stage, Production.
@@ -298,24 +344,50 @@ Click **Submit**. The remote file(s) are added.
 
 See [Artifactory Connector Settings Reference](/docs/platform/Connectors/Cloud-providers/ref-cloud-providers/artifactory-connector-settings-reference) (see **Artifactory with Terraform Scripts and Variable Definitions (.tfvars) Files**).
 
+#### AWS S3
+
+1. In **Identifier**, enter an identifier, so you can refer to variables using expressions if needed.
+2. In **Region**, select the region where your bucket is stored.
+3. In **Bucket**, select the bucket where your Terraform var files are stored (all buckets from the selected region that are available to the connector will be fetched).
+4. In **File Paths**, add one or more file paths from the root of the bucket to the variable file.
+
+   ![](./static/provision-infra-dynamically-with-terraform-10.png)
+
+Click **Submit**. The remote file(s) are added.
+
 ## Backend Configuration
 
 The **Backend Configuration** section contains the [remote state](https://www.terraform.io/docs/language/state/remote.html) values.
 
 You can use an inline or remote state file.
 
-### Using a Remote State File
-
-:::note
-
-Currently, remote state file support is behind the feature flag `TERRAFORM_REMOTE_BACKEND_CONFIG`. Contact [Harness Support](mailto:support@harness.io) to enable the feature.
-
-:::
+### Using a remote Backend Config File
 
 1. In Backend Configuration, select **Remote**.
-2. Click **Specify Backend Config File**, add a Connector to your repo, and select the backend config file.  
+2. Click **Specify Backend Config File**
+3. Select your provider (GitHub, Artifactory, S3, etc.) and then select or create a Connector to the repo where the files are located. Typically, this is the same repo where your Terraform script is located, so you can use the same Connector.
+   ![](./static/run-a-terraform-plan-with-the-terraform-apply-step-16.png)
 
-![](./static/run-a-terraform-plan-with-the-terraform-plan-step-15.png)
+#### Git providers
+
+1. In **Git Fetch Type**, select **Latest from Branch** or **Specific Commit ID**.
+2. In **Branch**, enter the name of the branch.
+3. In **File Path**, add file path from the root of the repo to the backend config file.
+4. Click **Submit**. The remote file(s) are added.
+
+   ![](./static/run-a-terraform-plan-with-the-terraform-apply-step-08.png)
+
+#### Artifactory
+
+See [Artifactory Connector Settings Reference](/docs/platform/Connectors/Cloud-providers/ref-cloud-providers/artifactory-connector-settings-reference) (see **Artifactory with Terraform Scripts and Variable Definitions (.tfvars) Files**).
+
+#### AWS S3
+
+1. In **Region**, select the region where your bucket is stored.
+2. In **Bucket**, select the bucket where your backend config file is stored (all buckets from the selected region that are available to the connector will be fetched).
+3. In **File Path**, add file path from the root of the bucket to the backend config file.
+
+   ![](./static/run-a-terraform-plan-with-the-terraform-apply-step-17.png)
 
 You can also use files in the [Harness File Store](/docs/continuous-delivery/x-platform-cd-features/services/add-inline-manifests-using-file-store).
 
@@ -372,15 +444,33 @@ For example, if your config.tf file has the following backend:
 
 
 ```json
-terraform {  
-  backend "gcs" {  
-    bucket  = "tf-state-prod"  
-    prefix  = "terraform/state"  
-  }  
+terraform {
+  backend "gcs" {
+    bucket  = "tf-state-prod"
+    prefix  = "terraform/state"
+    }
 }
 ```
 
-In **Backend Configuration**, you provide the required configuration variables for that backend type. See **Configuration variables** in Terraform's [gcs Standard Backend doc](https://www.terraform.io/docs/language/settings/backends/gcs.html#configuration-variables).
+In **Backend Configuration**, you provide the required configuration variables for the backend type. 
+
+For a remote backend configuration, the variables should be in .tfvars file.
+
+Example:
+```json
+bucket  = "tf-state-prod"  
+prefix  = "terraform/state"
+```
+
+In your Terraform .tf config file, only the definition of the Terraform backend is required:
+
+```json
+terraform {  
+  backend "gcs" {}
+}
+```
+
+See **Configuration variables** in Terraform's [gcs Standard Backend doc](https://www.terraform.io/docs/language/settings/backends/gcs.html#configuration-variables).
 
 ## Targets
 
@@ -407,7 +497,7 @@ You can use Harness encrypted text for values. See [Add Text Secrets](/docs/plat
 
 Enable this setting to use a JSON representation of the Terraform plan that is implemented in a Terraform Plan step.
 
-In subsequent **Execution** steps, such as a [Shell Script](/docs/continuous-delivery/x-platform-cd-features/executions/cd-general-steps/using-shell-scripts) step, you can reference the Terraform plan using this expression format:
+In subsequent **Execution** steps, such as a [Shell Script](/docs/continuous-delivery/x-platform-cd-features/cd-steps/utilities/shell-script-step) step, you can reference the Terraform plan using this expression format:
 
 `<+execution.steps.[Terraform Plan step Id].plan.jsonFilePath>`
 
@@ -438,7 +528,7 @@ The JSON of the Terraform Plan step is not available after Rollback.
 
 ## Export Human Readable representation of Terraform Plan
 
-Enable this option to view the Terraform plan file path and contents as human-readable JSON is subsequent steps, such as a [Shell Script step](/docs/continuous-delivery/x-platform-cd-features/executions/cd-general-steps/using-shell-scripts).
+Enable this option to view the Terraform plan file path and contents as human-readable JSON is subsequent steps, such as a [Shell Script step](/docs/continuous-delivery/x-platform-cd-features/cd-steps/utilities/shell-script-step).
 
 Once you enable this option and run a CD stage with the Terraform Plan step, you can click in the Terraform Plan step's **Output** tab and copy the **Output Value** for the **humanReadableFilePath** output.
 
@@ -453,7 +543,7 @@ For example, if the Terraform Plan stage and step Ids are `tf` then you would ge
 - **humanReadableFilePath**:
   - `<+terraformPlanHumanReadable."pipeline.stages.tf.spec.execution.steps.tf.tf_planHumanReadable">`
 
-Next, you can enter those expressions in a subsequent [Shell Script step](/docs/continuous-delivery/x-platform-cd-features/executions/cd-general-steps/using-shell-scripts) step and Harness will resolve them to the human-readable paths and JSON.
+Next, you can enter those expressions in a subsequent [Shell Script step](/docs/continuous-delivery/x-platform-cd-features/cd-steps/utilities/shell-script-step) step and Harness will resolve them to the human-readable paths and JSON.
 
 For example, here is a script using the variables:
 
@@ -470,23 +560,49 @@ Terraform has compared your real infrastructure against your configuration
 and found no differences, so no changes are needed.
 ```
 
+## Command line options
+
+This setting allows you to set the Terraform CLI options for Terraform commands depending on the Terraform step type. For example: `-lock=false`, `-lock-timeout=0s`.
+
+
+![](./static/run-a-terraform-plan-with-the-terraform-plan-step-16.png)
+
+## Skip Terraform Refresh
+
+Terraform refresh command won't be running when this setting is selected.
+
 ## Option: Terraform Plan detailed-exitcode
 
 You can use the standard `terraform plan` command option [detailed-exitcode](https://www.terraform.io/cli/commands/plan#other-options) with the Harness Terraform Plan step.
 
-If you use the `-detailed-exitcode` option in a step that follows the Harness Terraform Plan step, such as a [Shell Script](/docs/continuous-delivery/x-platform-cd-features/executions/cd-general-steps/using-shell-scripts) step, Harness will return a detailed exit code:
+If you use the `-detailed-exitcode` option in a step that follows the Harness Terraform Plan step, such as a [Shell Script](/docs/continuous-delivery/x-platform-cd-features/cd-steps/utilities/shell-script-step) step, Harness will return a detailed exit code:
 
 * `0`: succeeded with empty diff (no changes)
 * `1`: error
-* `2`: succeeded with non-empty diff (changes present)
+* `2`: succeeded with non-empty diff (changes present)|
+
+Exit codes are available as Terraform Plan step outputs that can be accessed using expressions with the following format:
+
+```
+<+pipeline.stages.STAGE_ID.spec.execution.steps.STEP_ID.plan.detailedExitCode>
+```
+
+For example:
+
+```
+<+pipeline.stages.TfStage.spec.execution.steps.TfPlan.plan.detailedExitCode>
+```
+
 
 ## Option: Advanced Settings
 
 In **Advanced**, you can use the following options:
 
-* [Step Skip Condition Settings](/docs/platform/8_Pipelines/w_pipeline-steps-reference/step-skip-condition-settings.md)
-* [Step Failure Strategy Settings](/docs/platform/Pipelines/w_pipeline-steps-reference/step-failure-strategy-settings)
-* [Select Delegates with Selectors](/docs/platform/Delegates/manage-delegates/select-delegates-with-selectors)
+* [Delegate Selector](https://developer.harness.io/docs/platform/delegates/manage-delegates/select-delegates-with-selectors/)
+* [Conditional Execution](https://developer.harness.io/docs/platform/pipelines/w_pipeline-steps-reference/step-skip-condition-settings/)
+* [Failure Strategy](https://developer.harness.io/docs/platform/pipelines/w_pipeline-steps-reference/step-failure-strategy-settings/)
+* [Looping Strategy](https://developer.harness.io/docs/platform/pipelines/looping-strategies-matrix-repeat-and-parallelism/)
+* [Policy Enforcement](https://developer.harness.io/docs/platform/Governance/Policy-as-code/harness-governance-overview)
 
 ## See Also
 

@@ -10,6 +10,13 @@ helpdocs_is_published: true
 
 import Sixty from '/docs/feature-flags/shared/p-sdk-run60seconds.md'
 
+import Smpno from '../shared/note-smp-not-compatible.md'
+
+import Closeclient from '../shared/close-sdk-client.md'
+
+
+<Smpno />
+
 
 This topic describes how to use the Harness Feature Flags SDK for your React Native application. 
 
@@ -236,7 +243,7 @@ let jsonEvaluation = await client.jsonVariation("demo_json_evaluation", {});
 
 ### Register the event listener
 
-Use `client.registerEventsListener` to register a listener for different events that might be triggered by SDK.
+Use `client.registerListener` to register a listener for different events that might be triggered by SDK.
 
 The possible events and their responses are outlined in the following table:
 
@@ -264,19 +271,21 @@ When you receive a response showing the current status of your Feature Flag, go 
 
 <Sixty />
 
-## Close the SDK
+## Close the SDK client
 
-When SDK is not needed, for example, when the app is not running, you can shut down the SDK. This can avoid potential memory leaks.
+<Closeclient />
 
+To close the SDK client, call this method:
 
 ```
 client.destroy()
 ```
+
 ## Additional options
 
 ### Use the Harness Relay Proxy
 
-When using your Feature Flag SDKs with a [Harness Relay Proxy](../../ff-using-flags/relay-proxy/relay-proxy.md) you need to change the default URL.
+When using your Feature Flag SDKs with a [Harness Relay Proxy](/docs/feature-flags/relay-proxy/) you need to change the default URL.
 
 To do this, import the following URL helper functions:
 
@@ -319,7 +328,7 @@ jsonVariation(evalutionId: string, defaultValue: any)
 ```
 
 ```
-registerEventsListener(listener: (type: string, flags: any) => void)
+registerListener(listener: (type: string, flags: any) => void)
 ```
 
 ```

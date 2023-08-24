@@ -1,5 +1,5 @@
 ---
-title: Synchronize Parallel Stages and Step Groups using Barriers
+title: Synchronize parallel stages and step groups using Barriers
 description: This topic describes how to synchronize different stages in your Pipeline using barriers.
 sidebar_position: 4
 helpdocs_topic_id: dmlf8w2aeh
@@ -8,13 +8,17 @@ helpdocs_is_private: false
 helpdocs_is_published: true
 ---
 
-This topic describes how to synchronize stages and [step groups](../x-platform-cd-features/cd-steps/utilities/step-groups.md) in your pipeline using barriers.
+This topic describes how to synchronize stages and [step groups](../x-platform-cd-features/cd-steps/step-groups.md) in your pipeline using barriers.
 
 :::note
 
 Harness provides multiple options for controlling resource usage and protecting capacity limits. See [Controlling Resource Usage with Barriers, Resource Constraints, and Queue Steps](./controlling-deployments-with-barriers-resource-constraints-and-queue-steps.md).
 
 :::
+
+## Important notes
+
+* You cannot use barriers with [Matrix, Looping, and Repeat](https://developer.harness.io/docs/platform/pipelines/looping-strategies-matrix-repeat-and-parallelism) strategies. 
 
 ## Barriers and Synchronization
 
@@ -66,4 +70,5 @@ You cannot use a Harness variable expression in **Barrier Reference**.Now you ca
 
 * You can have multiple barriers in a stage/step group. Every barrier in the same stage/step group must use a unique **Barrier Reference**.
 * Ensure the Barrier Reference string for each related barrier across the different stages/step groups matches.
+
 

@@ -10,6 +10,12 @@ helpdocs_is_published: true
 
 import Sixty from '/docs/feature-flags/shared/p-sdk-run60seconds.md'
 
+import Smpno from '../shared/note-smp-not-compatible.md'
+
+import Closeclient from '../shared/close-sdk-client.md'
+
+
+<Smpno />
 
 :::caution 
 In Version 1.1.3 of the .NET SDK, the package name for installing the SDK changed from **ff-netF48-server-sdk** to **ff-dotnet-server-sdk**. To use this version, make sure you remove the old package name and use the new one. You can do this by using the following commands:  
@@ -33,7 +39,7 @@ Make sure you read and understand:
 
 ## Version
 
-The current version of this SDK is **1.1.7.**
+The current version of this SDK is **1.1.9.**
 
 If you are using an older version of the .NET Framework, it may not default the security protocol to TLS 1.2. For compatibility with this SDK, set the protocol to TLS 1.2 by using the following:
 
@@ -263,6 +269,10 @@ When you receive a response showing the current status of your Feature Flag, go 
 
 <Sixty />
 
+## Close the SDK client
+
+<Closeclient />
+
 ## Additional options
 
 ### Develop on your local environment
@@ -304,7 +314,7 @@ Log.Logger = new LoggerConfiguration()
 ```
 ### Use the Relay Proxy
 
-When using your Feature Flag SDKs with a [Harness Relay Proxy](../../ff-using-flags/relay-proxy/relay-proxy.md) you need to change the default ConfigURL and EventURL that we use. You can pass the URLs in when initializing the SDK, for example: 
+When using your Feature Flag SDKs with a [Harness Relay Proxy](/docs/feature-flags/relay-proxy/) you need to change the default ConfigURL and EventURL that we use. You can pass the URLs in when initializing the SDK, for example: 
 
 
 ```

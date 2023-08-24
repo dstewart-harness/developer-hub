@@ -2,9 +2,9 @@
 sidebar_position: 50
 description: Deploy a Harness Delegate that uses Workload Identity to access Google Cloud Services
 keywords: [Google,delegate,Terraform,GKE,workload identity]
+title: Install Harness Delegate on Google Kubernetes Engine (GKE) With Workload Identity
 ---
 
-# Install Harness Delegate on Google Kubernetes Engine (GKE) With Workload Identity
 
 ```mdx-code-block
 import Tabs from '@theme/Tabs';
@@ -278,4 +278,4 @@ task destroy
 
 By using Workload Identity Delegate we have simplified and secured our CI pipelines, which can now use any Google API services by configuring the GSA with the correct roles and permissions. The CI SaaS platform no longer needs to store or update the Google API credentials.
 
-Having deployed Workload Identity Delegate, you can also do [keyless signing](https://docs.sigstore.dev/cosign/sign/#keyless-signing) of your container images using Google Application Credentials using [cosign](https://sigstore.dev).
+Having deployed Workload Identity Delegate, you can also do [keyless signing](https://docs.sigstore.dev/cosign/overview/#keyless-signing-of-a-container) of your container images using Google Application Credentials using [cosign](https://sigstore.dev).

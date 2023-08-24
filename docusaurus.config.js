@@ -51,7 +51,15 @@ const config = {
           exclude: ["**/shared/**", "**/static/**"],
           routeBasePath: "docs", //CHANGE HERE
         },
-
+        sitemap: {
+          // changefreq: 'weekly',
+          // priority: 0.5,
+          ignorePatterns: [
+            "/docs/infra-as-code-management",
+            "/docs/infra-as-code-management/**",
+          ],
+          // filename: 'sitemap.xml',
+        },
         theme: {
           customCss: require.resolve("./src/css/custom.css"), // we could also use scss here
         },
@@ -67,6 +75,12 @@ const config = {
   themeConfig:
     /** @type {import('@docusaurus/preset-classic').ThemeConfig} */
     ({
+      metadata: [
+        {
+          name: "og:image",
+          content: "https://developer.harness.io/img/hdh-social-card.png",
+        },
+      ],
       navbar: {
         title: "Harness Developer Hub",
         logo: {
@@ -83,6 +97,7 @@ const config = {
             position: "right",
             type: "dropdown",
             label: "Tutorials",
+            to: "tutorials",
             items: [
               {
                 // type: "doc",
@@ -129,8 +144,23 @@ const config = {
               },
               {
                 // type: "doc",
+                label: "Track Errors",
+                to: "tutorials/error-tracking",
+              },
+              {
+                // type: "doc",
+                label: "Manage Developer Portal",
+                to: "tutorials/internal-developer-portal",
+              },
+              {
+                // type: "doc",
                 label: "Administer Harness Platform",
                 to: "tutorials/platform",
+              },
+              {
+                // type: "doc",
+                label: "Administer Harness Self-Managed Enterprise Edition",
+                to: "tutorials/self-managed-enterprise-edition",
               },
             ],
           },
@@ -138,6 +168,7 @@ const config = {
             position: "right",
             type: "dropdown",
             label: "Documentation",
+            to: "docs",
             items: [
               {
                 label: "Get Started",
@@ -172,7 +203,15 @@ const config = {
                 to: "docs/chaos-engineering",
               },
               {
-                label: "Harness Platform",
+                label: "Continuous Error Tracking",
+                to: "docs/continuous-error-tracking",
+              },
+              {
+                label: "Internal Developer Portal",
+                to: "docs/internal-developer-portal",
+              },
+              {
+                label: "Platform",
                 to: "docs/platform",
               },
               {
@@ -205,6 +244,7 @@ const config = {
             label: "Certifications",
             position: "right",
             type: "dropdown",
+            to: "certifications",
             items: [
               {
                 label: "All Certifications",
@@ -218,6 +258,18 @@ const config = {
                 label: "Continuous Integration",
                 to: "certifications/continuous-integration",
               },
+              {
+                label: "Cloud Cost Management",
+                to: "certifications/cloud-cost-management",
+              },
+              {
+                label: "Feature Flags",
+                to: "certifications/feature-flags",
+              },
+              {
+                label: "Instructions",
+                to: "certifications/instructions",
+              },
             ],
           },
           {
@@ -227,9 +279,14 @@ const config = {
           },
           {
             position: "right",
-            to: "https://join.slack.com/t/harnesscommunity/shared_invite/zt-y4hdqh7p-RVuEQyIl5Hcx4Ck8VCvzBw",
-            label: "Join Slack",
+            to: "community",
+            label: "Community",
           },
+          //{
+          //  position: "right",
+          //  to: "https://join.slack.com/t/harnesscommunity/shared_invite/zt-1h2cy1up2-Bf3MQQvKTf~YkVcsnkJ5pw",
+          //  label: "Join Slack",
+          //},
           {
             // type: "search",
             // position: "right",
@@ -244,13 +301,6 @@ const config = {
             html: '<button class="button button--cta">Sign up</button>',
             href: "https://app.harness.io/auth/#/signup/&?utm_source=website&utm_medium=harness-developer-hub&utm_campaign=plt-plg&utm_content=get-started",
           },
-          /**
-          {
-            href: "https://github.com/harness/developer-hub",
-            label: "Developer Hub GitHub",
-            position: "right",
-          },
-          */
         ],
       },
       footer: {
@@ -291,6 +341,10 @@ const config = {
                 label: "Chaos Engineering",
                 to: "https://harness.io/products/chaos-engineering",
               },
+              {
+                label: "Continuous Error Tracking",
+                to: "https://www.harness.io/products/continuous-error-tracking",
+              },
             ],
           },
           {
@@ -302,23 +356,15 @@ const config = {
               },
               {
                 label: "Slack",
-                to: "https://join.slack.com/t/harnesscommunity/shared_invite/zt-y4hdqh7p-RVuEQyIl5Hcx4Ck8VCvzBw",
+                to: "https://join.slack.com/t/harnesscommunity/shared_invite/zt-1h2cy1up2-Bf3MQQvKTf~YkVcsnkJ5pw",
               },
               {
                 label: "API Reference",
                 to: "https://apidocs.harness.io/",
               },
               {
-                label: "Forum",
-                to: "https://community.harness.io",
-              },
-              {
-                label: "University",
-                to: "https://university.harness.io",
-              },
-              {
                 label: "Open Source",
-                to: "https://harness-community.github.io/",
+                to: "https://www.harness.io/open-source",
               },
               {
                 label: "YouTube",
@@ -366,6 +412,11 @@ const config = {
         defaultMode: "light",
         disableSwitch: true,
         respectPrefersColorScheme: false,
+      },
+      docs: {
+        sidebar: {
+          hideable: true,
+        },
       },
       /*
       announcementBar: {
@@ -434,6 +485,9 @@ const config = {
         copyright: "Harness Inc.",
         rssDescription: "Harness Release Notes",
       },
+      redirectExport: {
+        destPath: "_redirects",
+      },
     }),
   plugins: [
     [
@@ -454,18 +508,7 @@ const config = {
       */
       clientRedirects,
     ],
-    [
-      "@docusaurus/plugin-content-docs",
-      {
-        id: "tutorials",
-        path: "tutorials",
-        routeBasePath: "tutorials",
-        exclude: ["**/shared/**", "**/static/**"],
-        sidebarPath: require.resolve("./sidebars-tutorials.js"),
-        editUrl: "https://github.com/harness/developer-hub/tree/main",
-        // ... other options
-      },
-    ],
+
     [
       "@docusaurus/plugin-content-docs",
       {
@@ -479,13 +522,37 @@ const config = {
       },
     ],
     [
-      "@docusaurus/plugin-content-docs",
+      path.resolve(__dirname, "./plugins/redirect-plugin"),
+      {
+        id: "tutorials",
+        path: "tutorials",
+        routeBasePath: "tutorials",
+        exclude: ["**/shared/**", "**/static/**"],
+        sidebarPath: require.resolve("./sidebars-tutorials.js"),
+        editUrl: "https://github.com/harness/developer-hub/tree/main",
+        // ... other options
+      },
+    ],
+    [
+      path.resolve(__dirname, "./plugins/redirect-plugin"),
       {
         id: "kb",
         path: "kb",
         routeBasePath: "kb",
         exclude: ["**/shared/**", "**/static/**"],
         sidebarPath: require.resolve("./sidebars-kb.js"),
+        editUrl: "https://github.com/harness/developer-hub/tree/main",
+        // ... other options
+      },
+    ],
+    [
+      "@docusaurus/plugin-content-docs",
+      {
+        id: "community",
+        path: "community",
+        routeBasePath: "community",
+        exclude: ["**/shared/**", "**/static/**"],
+        sidebarPath: require.resolve("./sidebars-community.js"),
         editUrl: "https://github.com/harness/developer-hub/tree/main",
         // ... other options
       },
@@ -501,12 +568,14 @@ const config = {
         editUrl: "https://github.com/harness/developer-hub/tree/main",
       },
     ],
+
     "docusaurus-plugin-sass",
     path.join(__dirname, "/plugins/hotjar-plugin"),
     path.join(__dirname, "/plugins/onetrust-plugin"),
     path.join(__dirname, "/plugins/utmcookie-plugin"),
     path.join(__dirname, "/plugins/munity-plugin"),
   ],
+  clientModules: [require.resolve("./client-modules/DetailsFromDocs")],
 };
 
 module.exports = config;

@@ -1,5 +1,5 @@
 ---
-title: Adding Custom Approval stages and steps
+title: Adding custom approval stages and steps
 description: Custom Approval stages and steps add control gates to pipelines
 sidebar_position: 40
 helpdocs_topic_id: 9ulc3vrpf2
@@ -9,7 +9,7 @@ helpdocs_is_published: true
 ---
 
 
-:::note
+:::important
 Currently, this feature is behind the feature flag `NG_CUSTOM_APPROVAL`. Contact [Harness Support](mailto:support@harness.io) to enable the feature.
 :::
 
@@ -54,7 +54,7 @@ Criteria can be the following:
 * Evaluating a JEXL Expression.
 	+ Harness supports JEXL expressions and you can use these with script outputs or Harness variables to create expressions.
 	+ If the resolved JEXL expression is a Boolean true, the approval criteria is met.
-	+ For example, you could evaluate the output from a previous [Shell Script](/docs/continuous-delivery/x-platform-cd-features/executions/cd-general-steps/using-shell-scripts) step named **test** by referencing its output in a JEXL expression and comparing it to the value `Approved`: `<+execution.steps.test.output.outputVariables.status>=="Approved"`.
+	+ For example, you could evaluate the output from a previous [Shell Script](/docs/continuous-delivery/x-platform-cd-features/cd-steps/cd-general-steps/using-shell-scripts) step named **test** by referencing its output in a JEXL expression and comparing it to the value `Approved`: `<+execution.steps.test.output.outputVariables.status>=="Approved"`.
 	+ See [Built-in and Custom Harness Variables Reference](../12_Variables-and-Expressions/harness-variables.md) and [Extracting Characters from Harness Variable Expressions](../12_Variables-and-Expressions/extracting-characters-from-harness-variable-expressions.md).
 
 ## Add a Custom Approval stage

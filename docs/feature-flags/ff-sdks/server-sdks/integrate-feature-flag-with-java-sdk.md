@@ -10,6 +10,13 @@ helpdocs_is_published: true
 
 import Sixty from '/docs/feature-flags/shared/p-sdk-run60seconds.md'
 
+import Smpyes from '../shared/note-smp-compatible.md'
+
+import Closeclient from '../shared/close-sdk-client.md'
+
+
+<Smpyes />
+
 
 This topic describes how to use the Harness Feature Flags Java SDK for your Java application.
 
@@ -26,7 +33,7 @@ Make sure you read and understand:
 
 ## Version
 
-The current version of this SDK is **1.2.2.**
+The current version of this SDK is **1.2.4.**
 
 ## Requirements
 
@@ -100,7 +107,7 @@ To add a Target, build it and pass in arguments for the following:
 | --- | --- | --- | --- |
 | **Parameter** | **Description** | **Required?** | **Example** |
 | `identifier` | Unique ID for the TargetRead **Regex requirements for Target names and identifiers** below for accepted characters. | Required | `.identifier("HT_1")` |
-| `name` | Name for this Target. This does not have to be unique. **Note**: If you don’t provide a value, the name will be the same as the identifier.Read **Regex requirements for Target names and identifiers** below for accepted characters. | Optional**Note**: If you don't want to send a name, don't send the parameter. Sending an empty argument will cause an error. | `.name("Harness_Target_1")` |
+| `name` | Name for this Target. This does not have to be unique. **Note**: If you don’t provide a value, the name will be the same as the identifier.Read **Regex requirements for Target names and identifiers** below for accepted characters. | Optional<br />**Note**: If you don't want to send a name, don't send the parameter. Sending an empty argument will cause an error. | `.name("Harness_Target_1")` |
 | `attributes` | Additional data you can store for a Target, such as email addresses or location. | Optional | `.attributes(new HashMap<String, Object>())` |
 
 <details>
@@ -151,7 +158,7 @@ You can configure the following features of the SDK through the `baseConfig`:
 | --- | --- | --- | --- |
 | **Name** | **Example** | **Description** | **Default Value** |
 | baseUrl | `HarnessConfig.configUrl("https://config.ff.harness.io/api/1.0")` | The URL used to fetch Feature Flag Evaluations. When using the Relay Proxy, change this to: `http://localhost:7000` | `https://config.ff.harness.io/api/1.0` |
-| eventUrl | `HarnessConfig.eventUrl("https://config.ff.harness.io/api/1.0")` | The URL for posting metrics data to the Feature Flag service. When using the Relay Proxy, change this to: `http://localhost:7000` | `https://events.ff.harness.io/api/1.0` |
+| eventUrl | `HarnessConfig.eventUrl("https://events.ff.harness.io/api/1.0")` | The URL for posting metrics data to the Feature Flag service. When using the Relay Proxy, change this to: `http://localhost:7000` | `https://events.ff.harness.io/api/1.0` |
 | pollInterval | `BaseConfig.pollIntervalInSeconds(60))` | The interval **in seconds** that we poll for changes when you are not using stream mode. | `60` (seconds) |
 | streamEnabled | `BaseConfig.streamEnabled(false)` | Set to `true` to enable streaming mode.Set to `false` to disable streaming mode. | `true` |
 | analyticsEnabled | `BaseConfig.analyticsEnabled(true)` | Set to `true` to enable analytics.Set to `false` to disable analytics.**Note**: When enabled, analytics data is posted every 60 seconds. | `true` |
@@ -182,7 +189,7 @@ To complete the initialization, create an instance of the `cfClient` and pass in
 // Connector Config  
 HarnessConfig connectorConfig = HarnessConfig.builder()  
         .configUrl("https://config.ff.harness.io/api/1.0")  
-        .eventUrl("https://config.ff.harness.io/api/1.0")  
+        .eventUrl("https://events.ff.harness.io/api/1.0")  
         .build();  
   
 // Create Options  
@@ -240,14 +247,18 @@ When you receive a response showing the current status of your Feature Flag, go 
 
 <Sixty />
 
-## Close the SDK
+## Close the SDK client
 
-To help prevent memory leaks, we recommend closing the SDK when it’s not in use. To do this, run the following command: 
+<Closeclient />
 
+To close the SDK client: 
 
-```
-cfClient.close();
-```
+* Call the following function>
+
+  ```
+  cfClient.close();
+  ```
+  
 ## Additional options
 
 ### Develop on your local environment
@@ -467,7 +478,7 @@ To use the Relay Proxy, you need to change the following URLs in the HarnessConf
 | --- | --- | --- | --- |
 | **Name** | **Example** | **Description** | **Default Value** |
 | baseUrl | `HarnessConfig.configUrl("https://config.ff.harness.io/api/1.0")` | The URL used to fetch Feature Flag Evaluations. When using the Relay Proxy, change this to: `http://localhost:7000` | `https://config.ff.harness.io/api/1.0` |
-| eventUrl | `HarnessConfig.eventUrl("https://config.ff.harness.io/api/1.0")` | The URL for posting metrics data to the Feature Flag service. When using the Relay Proxy, change this to: `http://localhost:7000` | `https://events.ff.harness.io/api/1.0` |
+| eventUrl | `HarnessConfig.eventUrl("https://events.ff.harness.io/api/1.0")` | The URL for posting metrics data to the Feature Flag service. When using the Relay Proxy, change this to: `http://localhost:7000` | `https://events.ff.harness.io/api/1.0` |
 
 For example: 
 
@@ -550,4 +561,33 @@ public class GettingStarted {
         return value;  
     }  
 }
+```
+
+## Known issues
+
+### Error when importing the SDK JAR file
+
+If you're using the Java server SDK version 1.2.2 or earlier, you may see the following error when importing the SDK JAR file:
+
+`Missing artifact com.github.heremaps:oksse:jar:0.9.0`
+
+If you get this error, then add the Maven repository `https://jitpack.io` to your build system as follows:
+
+**If using Gradle:** 
+
+```
+repositories {
+  maven {
+    url 'https://jitpack.io'
+  }
+}
+```
+
+**If using Maven:**
+
+```
+<repository>
+  <url>https://jitpack.io</url>
+  ...
+</repository>
 ```

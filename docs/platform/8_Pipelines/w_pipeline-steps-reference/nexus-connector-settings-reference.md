@@ -1,5 +1,5 @@
 ---
-title: Nexus Connector Settings Reference
+title: Nexus connector settings reference
 description: This topic provides settings and permissions for the Nexus Connector. In this topic --  Nexus Permissions Required. Artifact Type Support. Docker Support. Nexus Artifact Server Name. ID. Description. Ta…
 # sidebar_position: 2
 helpdocs_topic_id: faor0dc98d
@@ -65,7 +65,9 @@ See [Tags Reference](../../20_References/tags-reference.md).
 
 #### Nexus Repository URL
 
-The URL that you use to connect to your Nexus server. For example, `https://nexus3.dev.mycompany.io`.
+The URL that you use to connect to your Nexus server. For example, `https://nexus3.dev.mycompany.io/repository/your-repo-name`.
+
+![](./static/nexus-repository.png)
 
 #### Version
 
